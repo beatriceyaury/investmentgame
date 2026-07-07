@@ -113,7 +113,7 @@
         }
         .asset-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             gap: 0.8rem 1rem;
             margin: 1.5rem 0 1rem;
         }
@@ -132,7 +132,15 @@
             font-weight: 500;
             color: #1a3b55;
             font-size: 0.85rem;
-            min-width: 100px;
+            min-width: 80px;
+        }
+        .asset-item .hidden-badge {
+            font-size: 0.7rem;
+            color: #6b8a9e;
+            font-style: italic;
+            background: #eef4fa;
+            padding: 0.1rem 0.6rem;
+            border-radius: 30px;
         }
         .asset-item input {
             width: 85px;
@@ -286,11 +294,6 @@
         }
         .history-log .entry:last-child { border: none; }
         .tag { background: #d6e4f2; padding: 0.1rem 0.8rem; border-radius: 30px; font-size: 0.8rem; }
-        .hidden-return {
-            color: #6b8a9e;
-            font-size: 0.7rem;
-            font-style: italic;
-        }
         @media (max-width: 700px) {
             .app { padding: 1rem; }
             .asset-grid { grid-template-columns: 1fr 1fr; }
@@ -453,7 +456,7 @@
                 html += `
                     <div class="asset-item">
                         <span class="label">${name}</span>
-                        <span class="hidden-return">🔒 return hidden</span>
+                        <span class="hidden-badge">🔒 hidden</span>
                         <input type="number" step="0.01" min="0" data-asset="${name}" value="0.00">
                     </div>
                 `;
