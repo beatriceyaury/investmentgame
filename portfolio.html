@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Portfolio · Investment History</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .portfolio-container {
+            padding: 1.5rem 0;
+        }
+        
+        .portfolio-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .summary-card {
+            background: white;
+            padding: 1.2rem;
+            border-radius: 1.2rem;
+            border: 1px solid #e2ebf3;
+            text-align: center;
+        }
+        
+        .summary-card .card-label {
+            color: #6b8a9e;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        
+        .summary-card .card-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #0b2a42;
+            margin-top: 0.3rem;
+        }
+        
+        .summary-card .card-value.positive { color: #0b6e3f; }
+        .summary-card .card-value.negative { color: #b22234; }
+        
+        .round-portfolio {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e2ebf3;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .round-portfolio .round-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #eaf1f9;
+        }
+        
+        .round-portfolio .round-header h3 {
+            color: #0b2a42;
+            font-size: 1.2rem;
+        }
+        
+        .round-portfolio .round-header .year-badge {
+            background: #1f3a57;
+            color: white;
+            padding: 0.2rem 1rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .round-portfolio .round-header .return-badge {
+            padding: 0.2rem 1rem;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .round-portfolio .round-header .return-badge.positive {
+            background: #e6f7e6;
+            color: #0b6e3f;
+        }
+        
+        .round-portfolio .round-header .return-badge.negative {
+            background: #fde8e8;
+            color: #b22234;
+        }
+        
+        .allocation-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .allocation-row {
+            display: grid;
+            grid-template-columns: 140px 1fr 100px 100px;
+            gap: 0.5rem 1rem;
+            align-items: center;
+            padding: 0.4rem 0.8rem;
+            border-radius: 0.6rem;
+            background: #f8fbfe;
+            border: 1px solid #eef4fa;
+        }
+        
+        .allocation-row .asset-name {
+            font-weight: 500;
+            color: #1a3b55;
+            font-size: 0.85rem;
+        }
+        
+        .allocation-row .asset-bar {
+            height: 24px;
+            background: #e8eef6;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .allocation-row .asset-bar .fill {
+            height: 100%;
+            border-radius: 20px;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 8px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: white;
+            min-width: 30px;
+        }
+        
+        .allocation-row .asset-amount {
+            font-weight: 600;
+            color: #0b2a42;
+            font-size: 0.9rem;
+            text-align: right;
+        }
+        
+        .allocation-row .asset-percent {
+            font-weight: 600;
+            color: #2563eb;
+            font-size: 0.85rem;
+            text-align: right;
+        }
+        
+        .allocation-row .asset-percent.cash-highlight {
+            color: #0b6e3f;
+        }
+        
+        .allocation-row.total-row {
+            background: #eaf1f9;
+            border-color: #c8d8e8;
+            font-weight: 700;
+            margin-top: 0.3rem;
+        }
+        
+        .allocation-row.total-row .asset-name {
+            font-weight: 700;
+            color: #0b2a42;
+        }
+        
+        .allocation-row.total-row .asset-amount {
+            font-weight: 700;
+            color: #0b2a42;
+        }
+        
+        .allocation-row.total-row .asset-percent {
+            font-weight: 700;
+            color: #0b2a42;
+        }
+        
+        .no-data {
+            text-align: center;
+            color: #6b8a9e;
+            padding: 3rem;
+            font-size: 1.1rem;
+        }
+        
+        .round-footer {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid #eef4fa;
+            font-size: 0.9rem;
+            color: #1a3b55;
+        }
+        
+        .round-footer .highlight {
+            font-weight: 600;
+        }
+        
+        .color-usa-eq { background: #2563eb; }
+        .color-europe-eq { background: #7c3aed; }
+        .color-japan-eq { background: #dc2626; }
+        .color-china-eq { background: #eab308; }
+        .color-usa-fi { background: #0891b2; }
+        .color-europe-fi { background: #059669; }
+        .color-japan-fi { background: #8b5cf6; }
+        .color-china-fi { background: #f59e0b; }
+        .color-cash { background: #6b7280; }
+        
+        @media (max-width: 700px) {
+            .allocation-row {
+                grid-template-columns: 100px 1fr 70px 70px;
+                gap: 0.3rem 0.5rem;
+                font-size: 0.8rem;
+                padding: 0.3rem 0.5rem;
+            }
+            .allocation-row .asset-name { font-size: 0.75rem; min-width: 80px; }
+            .allocation-row .asset-amount { font-size: 0.8rem; }
+            .allocation-row .asset-percent { font-size: 0.75rem; }
+            .round-portfolio .round-header h3 { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- Navigation Bar -->
+        <div class="nav-bar">
+            <a href="index.html">🏠 Game</a>
+            <a href="results.html">📊 Results</a>
+            <a href="portfolio.html" class="active">📈 Portfolio</a>
+            <a href="instructions.html">📖 Instructions</a>
+        </div>
+
+        <h1>📈 Portfolio Allocation History</h1>
+        <div class="sub">Track your allocations, percentages, and performance across all rounds</div>
+
+        <div id="portfolioContainer" class="portfolio-container">
+            <!-- Rendered by JavaScript -->
+        </div>
+
+        <div class="footnote">All data stored locally in your browser</div>
+    </div>
+
+    <script>
+        function getAssetColor(assetName) {
+            const colorMap = {
+                "USA Eq": "color-usa-eq",
+                "Europe Eq": "color-europe-eq",
+                "Japan Eq": "color-japan-eq",
+                "China Eq": "color-china-eq",
+                "USA FI": "color-usa-fi",
+                "Europe FI": "color-europe-fi",
+                "Japan FI": "color-japan-fi",
+                "China FI": "color-china-fi",
+                "Cash": "color-cash"
+            };
+            return colorMap[assetName] || "color-usa-eq";
+        }
+
+        function loadPortfolio() {
+            const container = document.getElementById('portfolioContainer');
+            
+            // Try to get data from localStorage
+            let history = [];
+            const gameDataStr = localStorage.getItem('gameData');
+            if (gameDataStr) {
+                try {
+                    const gameData = JSON.parse(gameDataStr);
+                    history = gameData.history || [];
+                } catch(e) {}
+            }
+            
+            if (history.length === 0) {
+                const historyStr = localStorage.getItem('gameHistory');
+                if (historyStr) {
+                    try {
+                        history = JSON.parse(historyStr);
+                    } catch(e) {}
+                }
+            }
+
+            if (history.length === 0) {
+                container.innerHTML = `
+                    <div class="no-data">
+                        <p>📭 No portfolio data yet. Play the game first!</p>
+                        <p style="font-size:0.9rem; margin-top:0.5rem;">Complete rounds in the Game tab to build your portfolio history.</p>
+                        <p style="font-size:0.9rem; margin-top:0.5rem; color:#2563eb;">
+                            <a href="index.html" style="color:#2563eb; text-decoration:underline;">→ Go to Game</a>
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Calculate summary stats
+            const totalRounds = history.length;
+            const finalCapital = history[history.length - 1]?.newCapital || 10000;
+            const totalReturn = finalCapital - 10000;
+            const totalReturnPct = ((finalCapital / 10000) - 1) * 100;
+
+            let html = `
+                <div class="portfolio-summary">
+                    <div class="summary-card">
+                        <div class="card-label">📊 Total Rounds</div>
+                        <div class="card-value">${totalRounds} / 7</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="card-label">💰 Final Capital</div>
+                        <div class="card-value">$${finalCapital.toFixed(2)}</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="card-label">📈 Total Return</div>
+                        <div class="card-value ${totalReturn >= 0 ? 'positive' : 'negative'}">
+                            ${totalReturn >= 0 ? '+' : ''}$${totalReturn.toFixed(2)}
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="card-label">📈 Return %</div>
+                        <div class="card-value ${totalReturnPct >= 0 ? 'positive' : 'negative'}">
+                            ${totalReturnPct >= 0 ? '+' : ''}${totalReturnPct.toFixed(2)}%
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Show each round's allocations
+            history.forEach((h, index) => {
+                const roundNum = index + 1;
+                const allocations = h.allocation || {};
+                const totalCapital = h.startCapital || 10000;
+                const returnAmt = h.returnAmount || 0;
+                const returnPct = h.returnPercent || 0;
+                const newCapital = h.newCapital || 10000;
+                const year = h.year || 'Unknown';
+                const label = h.label || '';
+
+                // Get all asset names
+                const assetNames = Object.keys(allocations).sort();
+                
+                // Calculate total allocated (should equal capital)
+                let totalAllocated = 0;
+                assetNames.forEach(name => {
+                    totalAllocated += allocations[name] || 0;
+                });
+
+                html += `
+                    <div class="round-portfolio">
+                        <div class="round-header">
+                            <h3>Round ${roundNum}</h3>
+                            <div>
+                                <span class="year-badge">${year} ${label ? '· ' + label : ''}</span>
+                                <span class="return-badge ${returnAmt >= 0 ? 'positive' : 'negative'}">
+                                    ${returnAmt >= 0 ? '+' : ''}${returnAmt.toFixed(2)} (${returnPct >= 0 ? '+' : ''}${returnPct.toFixed(2)}%)
+                                </span>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom:0.5rem; font-size:0.85rem; color:#6b8a9e;">
+                            💰 Starting Capital: $${totalCapital.toFixed(2)} → 🔁 New Capital: $${newCapital.toFixed(2)}
+                        </div>
+
+                        <div class="allocation-grid">
+                `;
+
+                // Show each asset allocation with bar
+                assetNames.forEach(name => {
+                    const amount = allocations[name] || 0;
+                    const percent = totalCapital > 0 ? (amount / totalCapital) * 100 : 0;
+                    const colorClass = getAssetColor(name);
+                    const isCash = name === 'Cash';
+                    
+                    html += `
+                        <div class="allocation-row">
+                            <span class="asset-name">${name}</span>
+                            <div class="asset-bar">
+                                <div class="fill ${colorClass}" style="width: ${Math.max(percent, 0.5)}%;">
+                                    ${percent > 5 ? percent.toFixed(1) + '%' : ''}
+                                </div>
+                            </div>
+                            <span class="asset-amount">$${amount.toFixed(2)}</span>
+                            <span class="asset-percent ${isCash ? 'cash-highlight' : ''}">${percent.toFixed(1)}%</span>
+                        </div>
+                    `;
+                });
+
+                // Total row
+                html += `
+                        <div class="allocation-row total-row">
+                            <span class="asset-name">TOTAL</span>
+                            <div class="asset-bar" style="background: #dce8f5;">
+                                <div class="fill" style="width: 100%; background: #b6ccdf; color: #0b2a42;">
+                                    100%
+                                </div>
+                            </div>
+                            <span class="asset-amount">$${totalAllocated.toFixed(2)}</span>
+                            <span class="asset-percent">100%</span>
+                        </div>
+                    </div>
+
+                    <div class="round-footer">
+                        <span>💰 Cash allocation: <span class="highlight">$${(allocations['Cash'] || 0).toFixed(2)}</span> (${totalCapital > 0 ? ((allocations['Cash'] || 0) / totalCapital * 100).toFixed(1) : 0}%)</span>
+                        <span>📊 Total allocated: <span class="highlight">$${totalAllocated.toFixed(2)}</span></span>
+                    </div>
+                </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // Load data when page loads
+        document.addEventListener('DOMContentLoaded', loadPortfolio);
+        
+        // Listen for storage changes
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'gameData' || e.key === 'gameHistory') {
+                console.log('🔄 Data updated, refreshing portfolio...');
+                loadPortfolio();
+            }
+        });
+    </script>
+</body>
+</html>
