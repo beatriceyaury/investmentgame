@@ -3,29 +3,32 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Results · Market Returns</title>
+    <title>Results · Group A · Fear vs Opportunity</title>
     <link rel="stylesheet" href="style.css" />
     <style>
         .results-container {
             padding: 1.5rem 0;
         }
+        
         .round-results {
             background: white;
             border-radius: 1.5rem;
             padding: 1.5rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
             border: 1px solid #e2ebf3;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
+        
         .round-results h3 {
             color: #0b2a42;
-            margin-bottom: 1rem;
-            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            font-size: 1.3rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
         }
+        
         .round-results .year-badge {
             background: #1f3a57;
             color: white;
@@ -34,12 +37,84 @@
             font-size: 0.8rem;
             font-weight: 500;
         }
+        
+        .round-results .theme-tag {
+            background: #2563eb;
+            color: white;
+            padding: 0.2rem 1rem;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+        }
+        
+        .news-signals {
+            background: #f3f8fe;
+            border-radius: 1rem;
+            padding: 1rem 1.2rem;
+            margin: 0.8rem 0 1rem 0;
+            border-left: 4px solid #2563eb;
+        }
+        
+        .news-signals .signal {
+            font-size: 0.9rem;
+            color: #1a3b55;
+            padding: 0.2rem 0;
+            line-height: 1.5;
+        }
+        
+        .news-signals .signal::before {
+            content: "📰 ";
+        }
+        
+        .news-signals .signal-bad::before {
+            content: "⚠️ ";
+        }
+        
+        .news-signals .signal-good::before {
+            content: "✅ ";
+        }
+        
+        .performance-highlights {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+            margin: 0.8rem 0;
+        }
+        
+        .performance-highlights .best {
+            background: #e6f7e6;
+            padding: 0.5rem 1rem;
+            border-radius: 0.8rem;
+            border-left: 4px solid #0b6e3f;
+        }
+        
+        .performance-highlights .worst {
+            background: #fde8e8;
+            padding: 0.5rem 1rem;
+            border-radius: 0.8rem;
+            border-left: 4px solid #b22234;
+        }
+        
+        .performance-highlights .label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: #6b8a9e;
+            font-weight: 600;
+        }
+        
+        .performance-highlights .value {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        
         .market-returns-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             gap: 0.8rem;
             margin-top: 0.8rem;
         }
+        
         .return-item {
             background: #f8fbfe;
             padding: 0.6rem 1rem;
@@ -49,29 +124,35 @@
             align-items: center;
             border: 1px solid #e8eef6;
         }
+        
         .return-item .asset-name {
             font-weight: 500;
             color: #1a3b55;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
+        
         .return-item .return-value {
             font-weight: 700;
             font-size: 0.9rem;
         }
+        
         .return-item .return-value.positive { color: #0b6e3f; }
         .return-item .return-value.negative { color: #b22234; }
+        
         .no-data {
             text-align: center;
             color: #6b8a9e;
             padding: 3rem;
             font-size: 1.1rem;
         }
+        
         .summary-stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 1rem;
             margin-bottom: 2rem;
         }
+        
         .stat-card {
             background: white;
             padding: 1.2rem;
@@ -79,20 +160,24 @@
             border: 1px solid #e2ebf3;
             text-align: center;
         }
+        
         .stat-card .stat-label {
             color: #6b8a9e;
             font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 0.03em;
         }
+        
         .stat-card .stat-value {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: 700;
             color: #0b2a42;
             margin-top: 0.3rem;
         }
+        
         .stat-card .stat-value.positive { color: #0b6e3f; }
         .stat-card .stat-value.negative { color: #b22234; }
+        
         .return-summary {
             margin-bottom: 0.5rem;
             padding: 0.5rem 1rem;
@@ -103,7 +188,49 @@
             flex-wrap: wrap;
             font-size: 0.9rem;
         }
+        
         .return-summary span { font-weight: 500; }
+        
+        .group-header {
+            background: linear-gradient(135deg, #1f3a57, #2a4a6a);
+            color: white;
+            padding: 1.5rem 2rem;
+            border-radius: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .group-header h2 {
+            font-size: 1.8rem;
+            margin-bottom: 0.3rem;
+        }
+        
+        .group-header p {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+        
+        .group-themes {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.8rem;
+        }
+        
+        .group-themes .theme {
+            background: rgba(255,255,255,0.15);
+            padding: 0.3rem 1rem;
+            border-radius: 30px;
+            font-size: 0.85rem;
+        }
+        
+        @media (max-width: 700px) {
+            .performance-highlights {
+                grid-template-columns: 1fr;
+            }
+            .market-returns-grid {
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            }
+        }
     </style>
 </head>
 <body>
@@ -116,210 +243,278 @@
             <a href="instructions.html">📖 Instructions</a>
         </div>
 
-        <h1>📊 Market Returns by Round</h1>
-        <div class="sub">Historical returns for each asset class across all 7 rounds</div>
+        <h1>📊 Group A · Fear vs Opportunity</h1>
+        <div class="sub">Complete market data with news signals, themes, and performance insights</div>
 
         <div id="resultsContainer" class="results-container">
             <!-- Rendered by JavaScript -->
         </div>
 
-        <div class="footnote">Returns are revealed after each round · all data stored in your browser</div>
+        <div class="footnote">Historical returns and market context for each hidden year</div>
     </div>
 
     <script>
+        // Complete Group A Data
+        const GROUP_A_DATA = [
+            {
+                year: "2008",
+                theme: "Global financial crisis",
+                label: "Financial crisis",
+                newsSignals: [
+                    "Emergency policy support discussed",
+                    "Investors rush toward defensive assets",
+                    "Confidence in major institutions weakens"
+                ],
+                goodNews: "Government-backed debt and high-quality fixed income instruments are seeing increasing demand as investors seek stability.",
+                badNews: "European and global equity markets face mounting pressure as confidence in the banking system deteriorates.",
+                best: "China Fixed Income",
+                worst: "China Equity",
+                returns: { "USA Eq": -37.0, "Europe Eq": -45.0, "Japan Eq": -42.1, "China Eq": -51.0, "USA FI": 5.2, "Europe FI": 6.1, "Japan FI": 3.4, "China FI": 9.0, "Cash": 1.4 }
+            },
+            {
+                year: "2017",
+                theme: "Growth optimism",
+                label: "Growth optimism",
+                newsSignals: [
+                    "Global economic data improves",
+                    "Equity valuations continue climbing",
+                    "Some investors warn of complacency"
+                ],
+                goodNews: "Broad global equity markets benefit from synchronised economic growth and rising corporate earnings.",
+                badNews: "Traditional defensive assets struggle to attract capital as investor confidence improves.",
+                best: "China Equity",
+                worst: "China Fixed Income",
+                returns: { "USA Eq": 21.8, "Europe Eq": 25.0, "Japan Eq": 19.1, "China Eq": 54.0, "USA FI": 3.5, "Europe FI": 0.6, "Japan FI": 0.2, "China FI": -1.2, "Cash": 0.8 }
+            },
+            {
+                year: "2020",
+                theme: "Pandemic shock",
+                label: "Pandemic shock",
+                newsSignals: [
+                    "A global health crisis disrupts production and travel",
+                    "Governments prepare extraordinary support",
+                    "Markets struggle to assess long-term impact"
+                ],
+                goodNews: "Technology-focused US companies benefit from accelerated adoption of digital services, remote work and online commerce.",
+                badNews: "European equity markets face significant exposure to industries affected by travel restrictions and economic shutdowns.",
+                best: "China Equity",
+                worst: "Cash",
+                returns: { "USA Eq": 18.4, "Europe Eq": 5.0, "Japan Eq": 16.0, "China Eq": 30.0, "USA FI": 7.5, "Europe FI": 4.1, "Japan FI": 0.7, "China FI": 3.5, "Cash": 0.5 }
+            },
+            {
+                year: "2012",
+                theme: "Stabilisation",
+                label: "Stabilisation",
+                newsSignals: [
+                    "Central banks hint at additional support",
+                    "Investors cautiously re-enter risk assets",
+                    "Economic stability remains debated"
+                ],
+                goodNews: "Japanese assets begin attracting investor interest as policy makers signal willingness to stimulate economic activity.",
+                badNews: "Economically sensitive sectors and regions remain vulnerable if recovery momentum weakens.",
+                best: "Japan Equity",
+                worst: "Cash",
+                returns: { "USA Eq": 16.0, "Europe Eq": 19.0, "Japan Eq": 22.9, "China Eq": 19.0, "USA FI": 4.2, "Europe FI": 10.3, "Japan FI": 1.8, "China FI": 4.0, "Cash": 0.1 }
+            },
+            {
+                year: "2022",
+                theme: "Inflation and tightening",
+                label: "Inflation & tightening",
+                newsSignals: [
+                    "Inflation repeatedly surprises policy makers",
+                    "Bond markets reprice interest rate expectations",
+                    "Growth assets face valuation pressure"
+                ],
+                goodNews: "Cash and short-duration fixed income instruments become increasingly attractive as interest rates rise rapidly.",
+                badNews: "Growth-oriented equity markets face valuation pressure as discount rates move higher.",
+                best: "China Fixed Income",
+                worst: "China Equity",
+                returns: { "USA Eq": -18.1, "Europe Eq": -15.0, "Japan Eq": -9.4, "China Eq": -22.0, "USA FI": -13.0, "Europe FI": -17.2, "Japan FI": -5.3, "China FI": 3.1, "Cash": 1.5 }
+            },
+            {
+                year: "2009",
+                theme: "Recovery or trap",
+                label: "Recovery or trap",
+                newsSignals: [
+                    "Large-scale support enters markets",
+                    "Some investors see excessive pessimism",
+                    "Debate grows over recovery durability"
+                ],
+                goodNews: "Investors begin rotating aggressively into Asian growth markets following unprecedented market declines and policy stimulus.",
+                badNews: "Cash holdings remain elevated as many investors fear further economic deterioration despite improving market conditions.",
+                best: "China Equity",
+                worst: "Cash",
+                returns: { "USA Eq": 26.5, "Europe Eq": 32.0, "Japan Eq": 19.0, "China Eq": 62.0, "USA FI": 5.9, "Europe FI": 5.6, "Japan FI": 1.4, "China FI": 1.4, "Cash": 0.1 }
+            },
+            {
+                year: "2024",
+                theme: "Momentum vs diversification",
+                label: "Momentum vs diversification",
+                newsSignals: [
+                    "Innovation optimism expands further",
+                    "Markets question whether leadership is too concentrated",
+                    "Policy easing expectations rise"
+                ],
+                goodNews: "US technology and innovation sectors continue benefiting from optimism surrounding productivity-enhancing technologies.",
+                badNews: "Chinese and broader emerging-market equities face ongoing pressure from growth concerns and weaker capital inflows.",
+                best: "USA Equity",
+                worst: "Japan Fixed Income",
+                returns: { "USA Eq": 25.0, "Europe Eq": 9.0, "Japan Eq": 19.2, "China Eq": 20.0, "USA FI": 1.2, "Europe FI": 1.8, "Japan FI": -2.0, "China FI": 5.5, "Cash": 5.1 }
+            }
+        ];
+
         function loadResults() {
             const container = document.getElementById('resultsContainer');
             
-            // Try to get data from multiple sources
+            // Try to get game data from localStorage
             let history = [];
-            let allReturns = [];
+            let gameData = null;
             
-            // 1. Try from gameData (most complete)
             const gameDataStr = localStorage.getItem('gameData');
             if (gameDataStr) {
                 try {
-                    const gameData = JSON.parse(gameDataStr);
+                    gameData = JSON.parse(gameDataStr);
                     history = gameData.history || [];
-                    allReturns = gameData.allRoundReturns || [];
-                    console.log('📊 Loaded from gameData:', { history: history.length, returns: allReturns.length });
                 } catch(e) {}
             }
             
-            // 2. If empty, try individual storage
-            if (history.length === 0) {
-                const historyStr = localStorage.getItem('gameHistory');
-                if (historyStr) {
-                    try {
-                        history = JSON.parse(historyStr);
-                        console.log('📊 Loaded from gameHistory:', history.length);
-                    } catch(e) {}
-                }
+            // Build the HTML
+            let html = '';
+            
+            // Group header
+            html += `
+                <div class="group-header">
+                    <h2>🎯 Fear vs Opportunity</h2>
+                    <p>7 hidden years · Test your ability to react to crises and buy after fear</p>
+                    <div class="group-themes">
+                        <span class="theme">📉 Reaction to Crisis</span>
+                        <span class="theme">📈 Ability to buy after fear</span>
+                        <span class="theme">💪 Confidence after gains</span>
+                    </div>
+                </div>
+            `;
+            
+            // Summary stats
+            let totalReturn = 0;
+            let lastCapital = 10000;
+            let completedRounds = 0;
+            
+            if (history && history.length > 0) {
+                completedRounds = history.length;
+                lastCapital = history[history.length - 1]?.newCapital || 10000;
+                totalReturn = lastCapital - 10000;
             }
             
-            if (allReturns.length === 0) {
-                const returnsStr = localStorage.getItem('allRoundReturns');
-                if (returnsStr) {
-                    try {
-                        allReturns = JSON.parse(returnsStr);
-                        console.log('📊 Loaded from allRoundReturns:', allReturns.length);
-                    } catch(e) {}
-                }
-            }
-
-            // If we have returns data, use it
-            if (allReturns.length > 0) {
-                let html = '';
-                
-                // Summary stats
-                const totalRounds = allReturns.length;
-                let totalReturn = 0;
-                let lastCapital = 10000;
-                
-                allReturns.forEach((round, index) => {
-                    totalReturn += round.totalReturn || 0;
-                    if (index === allReturns.length - 1) {
-                        lastCapital = round.newCapital || 10000;
-                    }
-                });
-                
-                const totalReturnPct = ((lastCapital / 10000) - 1) * 100;
+            const totalReturnPct = ((lastCapital / 10000) - 1) * 100;
+            
+            html += `
+                <div class="summary-stats">
+                    <div class="stat-card">
+                        <div class="stat-label">📊 Rounds Completed</div>
+                        <div class="stat-value">${completedRounds} / 7</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">💰 Final Capital</div>
+                        <div class="stat-value">$${lastCapital.toFixed(2)}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">📈 Total Return</div>
+                        <div class="stat-value ${totalReturn >= 0 ? 'positive' : 'negative'}">
+                            ${totalReturn >= 0 ? '+' : ''}$${totalReturn.toFixed(2)}
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">📈 Return %</div>
+                        <div class="stat-value ${totalReturnPct >= 0 ? 'positive' : 'negative'}">
+                            ${totalReturnPct >= 0 ? '+' : ''}${totalReturnPct.toFixed(2)}%
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Show each round with full data
+            GROUP_A_DATA.forEach((round, index) => {
+                const roundNum = index + 1;
+                const returns = round.returns || {};
+                const isCompleted = history && history.length > index;
+                const playerData = isCompleted ? history[index] : null;
                 
                 html += `
-                    <div class="summary-stats">
-                        <div class="stat-card">
-                            <div class="stat-label">📊 Rounds Completed</div>
-                            <div class="stat-value">${totalRounds} / 7</div>
+                    <div class="round-results">
+                        <h3>
+                            <span>
+                                Round ${roundNum}
+                                <span class="theme-tag">${round.theme}</span>
+                            </span>
+                            <span class="year-badge">${round.year} · ${isCompleted ? '✅ Revealed' : '🔒 Hidden'}</span>
+                        </h3>
+                        
+                        <div class="news-signals">
+                            <div class="signal">${round.newsSignals[0]}</div>
+                            <div class="signal">${round.newsSignals[1]}</div>
+                            <div class="signal">${round.newsSignals[2]}</div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-label">💰 Final Capital</div>
-                            <div class="stat-value">$${lastCapital.toFixed(2)}</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-label">📈 Total Return</div>
-                            <div class="stat-value ${totalReturn >= 0 ? 'positive' : 'negative'}">
-                                ${totalReturn >= 0 ? '+' : ''}$${totalReturn.toFixed(2)}
+                        
+                        <div class="performance-highlights">
+                            <div class="best">
+                                <div class="label">🏆 Best Performance</div>
+                                <div class="value">${round.best}</div>
+                            </div>
+                            <div class="worst">
+                                <div class="label">📉 Worst Performance</div>
+                                <div class="value">${round.worst}</div>
                             </div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-label">📈 Return %</div>
-                            <div class="stat-value ${totalReturnPct >= 0 ? 'positive' : 'negative'}">
-                                ${totalReturnPct >= 0 ? '+' : ''}${totalReturnPct.toFixed(2)}%
+                        
+                        <div class="news-signals" style="border-left-color: #0b6e3f;">
+                            <div class="signal-good">${round.goodNews}</div>
+                            <div class="signal-bad">${round.badNews}</div>
+                        </div>
+                        
+                        ${isCompleted && playerData ? `
+                            <div class="return-summary">
+                                <span>💰 Your Return: ${playerData.returnAmount >= 0 ? '+' : ''}$${playerData.returnAmount?.toFixed(2) || '0.00'}</span>
+                                <span>📈 Your Return %: ${playerData.returnPercent >= 0 ? '+' : ''}${playerData.returnPercent?.toFixed(2) || '0.00'}%</span>
+                                <span>🔁 New Capital: $${playerData.newCapital?.toFixed(2) || 'N/A'}</span>
                             </div>
+                        ` : `
+                            <div class="return-summary" style="background: #f0f0f0; color: #6b8a9e;">
+                                <span>🔒 Complete this round to see your performance</span>
+                            </div>
+                        `}
+                        
+                        <div class="market-returns-grid">
+                    `;
+                
+                // Sort assets for display
+                const sortedAssets = Object.keys(returns).sort();
+                sortedAssets.forEach(asset => {
+                    const ret = returns[asset];
+                    const sign = ret >= 0 ? '+' : '';
+                    const className = ret >= 0 ? 'positive' : 'negative';
+                    html += `
+                        <div class="return-item">
+                            <span class="asset-name">${asset}</span>
+                            <span class="return-value ${className}">${sign}${ret.toFixed(1)}%</span>
+                        </div>
+                    `;
+                });
+                
+                html += `
                         </div>
                     </div>
                 `;
-
-                // Show each round
-                allReturns.forEach((round, index) => {
-                    const roundNum = index + 1;
-                    const year = round.year || 'Unknown';
-                    const label = round.label || '';
-                    const returns = round.returns || {};
-                    const roundReturn = round.totalReturn || 0;
-                    const roundReturnPct = round.returnPercent || 0;
-
-                    html += `
-                        <div class="round-results">
-                            <h3>
-                                <span>Round ${roundNum}</span>
-                                <span class="year-badge">${year} · ${label}</span>
-                            </h3>
-                            <div class="return-summary">
-                                <span>💰 Return: ${roundReturn >= 0 ? '+' : ''}$${roundReturn.toFixed(2)}</span>
-                                <span>📈 Return %: ${roundReturnPct >= 0 ? '+' : ''}${roundReturnPct.toFixed(2)}%</span>
-                                <span>🔁 New Capital: $${round.newCapital?.toFixed(2) || 'N/A'}</span>
-                            </div>
-                            <div class="market-returns-grid">
-                    `;
-
-                    const sortedAssets = Object.keys(returns).sort();
-                    sortedAssets.forEach(asset => {
-                        const ret = returns[asset];
-                        const sign = ret >= 0 ? '+' : '';
-                        const className = ret >= 0 ? 'positive' : 'negative';
-                        html += `
-                            <div class="return-item">
-                                <span class="asset-name">${asset}</span>
-                                <span class="return-value ${className}">${sign}${ret.toFixed(1)}%</span>
-                            </div>
-                        `;
-                    });
-
-                    html += `
-                            </div>
-                        </div>
-                    `;
-                });
-
-                container.innerHTML = html;
-                return;
-            }
-
-            // Fallback: show from history
-            if (history.length > 0) {
-                let html = '';
-                history.forEach((h, index) => {
-                    const roundNum = index + 1;
-                    const returns = h.returns || {};
-                    
-                    html += `
-                        <div class="round-results">
-                            <h3>
-                                <span>Round ${roundNum}</span>
-                                <span class="year-badge">${h.year || 'Unknown'}</span>
-                            </h3>
-                            <div class="return-summary">
-                                <span>💰 Return: ${h.returnAmount >= 0 ? '+' : ''}$${h.returnAmount?.toFixed(2) || '0.00'}</span>
-                                <span>📈 Return %: ${h.returnPercent >= 0 ? '+' : ''}${h.returnPercent?.toFixed(2) || '0.00'}%</span>
-                                <span>🔁 New Capital: $${h.newCapital?.toFixed(2) || 'N/A'}</span>
-                            </div>
-                            <div class="market-returns-grid">
-                    `;
-
-                    if (Object.keys(returns).length > 0) {
-                        const sortedAssets = Object.keys(returns).sort();
-                        sortedAssets.forEach(asset => {
-                            const ret = returns[asset];
-                            const sign = ret >= 0 ? '+' : '';
-                            const className = ret >= 0 ? 'positive' : 'negative';
-                            html += `
-                                <div class="return-item">
-                                    <span class="asset-name">${asset}</span>
-                                    <span class="return-value ${className}">${sign}${ret.toFixed(1)}%</span>
-                                </div>
-                            `;
-                        });
-                    } else {
-                        html += `<p style="color: #6b8a9e; grid-column: 1 / -1; text-align: center;">📊 Returns data available in game data</p>`;
-                    }
-
-                    html += `
-                            </div>
-                        </div>
-                    `;
-                });
-                container.innerHTML = html;
-                return;
-            }
-
-            // No data at all
-            container.innerHTML = `
-                <div class="no-data">
-                    <p>📭 No results yet. Play the game first!</p>
-                    <p style="font-size:0.9rem; margin-top:0.5rem;">Complete at least one round in the Game tab to see results here.</p>
-                    <p style="font-size:0.9rem; margin-top:0.5rem; color:#2563eb;">
-                        <a href="index.html" style="color:#2563eb; text-decoration:underline;">→ Go to Game</a>
-                    </p>
-                </div>
-            `;
+            });
+            
+            container.innerHTML = html;
         }
 
-        // Auto-refresh data when returning to this page
+        // Load data when page loads
         document.addEventListener('DOMContentLoaded', loadResults);
         
-        // Listen for storage changes (if data is updated in another tab)
+        // Listen for storage changes
         window.addEventListener('storage', function(e) {
-            if (e.key === 'gameData' || e.key === 'gameHistory' || e.key === 'allRoundReturns') {
+            if (e.key === 'gameData' || e.key === 'gameHistory') {
                 console.log('🔄 Data updated, refreshing results...');
                 loadResults();
             }
