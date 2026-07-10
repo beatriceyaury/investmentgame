@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Results · Market Returns</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .results-container {
+            padding: 1.5rem 0;
+        }
+        .round-results {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e2ebf3;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .round-results h3 {
+            color: #0b2a42;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .round-results .year-badge {
+            background: #1f3a57;
+            color: white;
+            padding: 0.2rem 1rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .market-returns-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 0.8rem;
+            margin-top: 0.8rem;
+        }
+        .return-item {
+            background: #f8fbfe;
+            padding: 0.6rem 1rem;
+            border-radius: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #e8eef6;
+        }
+        .return-item .asset-name {
+            font-weight: 500;
+            color: #1a3b55;
+            font-size: 0.85rem;
+        }
+        .return-item .return-value {
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+        .return-item .return-value.positive { color: #0b6e3f; }
+        .return-item .return-value.negative { color: #b22234; }
+        .no-data {
+            text-align: center;
+            color: #6b8a9e;
+            padding: 3rem;
+            font-size: 1.1rem;
+        }
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: white;
+            padding: 1.2rem;
+            border-radius: 1.2rem;
+            border: 1px solid #e2ebf3;
+            text-align: center;
+        }
+        .stat-card .stat-label {
+            color: #6b8a9e;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        .stat-card .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #0b2a42;
+            margin-top: 0.3rem;
+        }
+        .stat-card .stat-value.positive { color: #0b6e3f; }
+        .stat-card .stat-value.negative { color: #b22234; }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- Navigation Bar -->
+        <div class="nav-bar">
+            <a href="index.html">🏠 Game</a>
+            <a href="results.html" class="active">📊 Results</a>
+            <a href="portfolio.html">📈 Portfolio</a>
+            <a href="instructions.html">📖 Instructions</a>
+        </div>
+
+        <h1>📊 Market Returns by Round</h1>
+        <div class="sub">Historical returns for each asset class across all 7 rounds</div>
+
+        <div id="resultsContainer" class="results-container">
+            <!-- Rendered by JavaScript -->
+        </div>
+
+        <div class="footnote">Returns are revealed after each round · all data stored in your browser</div>
+    </div>
+
+    <script>
+        // Load results from localStorage
+        function loadResults() {
+            const container = document.getElementById('resultsContainer');
+            const history = JSON.parse(localStorage.getItem('gameHistory') || '[]');
+            const allReturns = JSON.parse(localStorage.getItem('allRoundReturns') || '[]');
+
+            if (history.length === 0 && allReturns.length === 0) {
+                container.innerHTML = `
+                    <div class="no-data">
+                        <p>📭 No results yet. Play the game first!</p>
+                        <p style="font-size:0.9rem; margin-top:0.5rem;">Complete at least one round in the Game tab to see results here.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            
+            // If we have the detailed returns data
+            if (allReturns.length > 0) {
+                allReturns.forEach((round, index) => {
+                    const roundNum = index + 1;
+                    const year = round.year || 'Unknown';
+                    const label = round.label || '';
+                    const returns = round.returns || {};
+
+                    html += `
+                        <div class="round-results">
+                            <h3>
+                                <span>Round ${roundNum}</span>
+                                <span class="year-badge">${year} · ${label}</span>
+                            </h3>
+                            <div class="market-returns-grid">
+                    `;
+
+                    const sortedAssets = Object.keys(returns).sort();
+                    sortedAssets.forEach(asset => {
+                        const ret = returns[asset];
+                        const sign = ret >= 0 ? '+' : '';
+                        const className = ret >= 0 ? 'positive' : 'negative';
+                        html += `
+                            <div class="return-item">
+                                <span class="asset-name">${asset}</span>
+                                <span class="return-value ${className}">${sign}${ret.toFixed(1)}%</span>
+                            </div>
+                        `;
+                    });
+
+                    html += `
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                // Fallback: show from history
+                history.forEach((h, index) => {
+                    const roundNum = index + 1;
+                    html += `
+                        <div class="round-results">
+                            <h3>
+                                <span>Round ${roundNum}</span>
+                                <span class="year-badge">${h.year || 'Unknown'}</span>
+                            </h3>
+                            <div class="market-returns-grid">
+                                <p style="color: #6b8a9e; grid-column: 1 / -1; text-align: center;">
+                                    📊 Detailed returns data not available. Play the game to generate complete data.
+                                </p>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            container.innerHTML = html;
+        }
+
+        // Load data when page loads
+        document.addEventListener('DOMContentLoaded', loadResults);
+    </script>
+</body>
+</html>
