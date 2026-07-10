@@ -4,698 +4,91 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Set A · Fear vs Opportunity · 7-Round Game</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-        }
-        body {
-            background: #f0f4fa;
-            padding: 1.5rem;
-            display: flex;
-            justify-content: center;
-        }
-        .app {
-            max-width: 1360px;
-            width: 100%;
-            background: white;
-            border-radius: 2.5rem;
-            padding: 2rem 2rem 2.5rem;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
-        }
-        h1 {
-            font-size: 2rem;
-            font-weight: 600;
-            color: #0b263b;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 0.2rem;
-        }
-        .game-description {
-            background: #f3f8fe;
-            border-radius: 1.5rem;
-            padding: 1.2rem 1.8rem;
-            margin-bottom: 1.8rem;
-            border-left: 5px solid #2563eb;
-            color: #1a3b55;
-            line-height: 1.6;
-            font-size: 0.95rem;
-        }
-        .game-description strong { color: #0b2a42; }
-        .sub {
-            color: #2b4c68;
-            margin-bottom: 1.8rem;
-            border-left: 5px solid #2563eb;
-            padding-left: 1.2rem;
-            background: #f3f8fe;
-            border-radius: 0 20px 20px 0;
-            font-weight: 450;
-        }
-        .round-panel {
-            background: #f8fbfe;
-            border-radius: 2rem;
-            padding: 1.5rem 1.8rem;
-            margin-bottom: 2rem;
-            border: 1px solid #e2ebf3;
-        }
-        .round-header {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-        .round-badge {
-            font-weight: 700;
-            font-size: 1.6rem;
-            color: #0b2a42;
-            background: #dce8f5;
-            padding: 0.2rem 1.8rem;
-            border-radius: 40px;
-            letter-spacing: -0.3px;
-        }
-        .year-tag {
-            background: #1f3a57;
-            color: white;
-            padding: 0.2rem 1.2rem;
-            border-radius: 30px;
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-        .capital-box {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 1.2rem 2rem;
-            background: white;
-            padding: 0.8rem 1.5rem;
-            border-radius: 60px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-            border: 1px solid #dce6f0;
-        }
-        .capital-box span {
-            font-weight: 500;
-            color: #1b3d58;
-        }
-        .capital-box .value {
-            font-weight: 700;
-            color: #0b2a42;
-            font-size: 1.2rem;
-        }
-        .remaining {
-            background: #e5eff9;
-            padding: 0.2rem 1.2rem;
-            border-radius: 30px;
-            font-weight: 600;
-            color: #00407a;
-        }
-        .asset-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 0.8rem 1rem;
-            margin: 1.5rem 0 1rem;
-        }
-        .asset-item {
-            background: white;
-            border-radius: 1.2rem;
-            padding: 0.7rem 1rem 0.7rem 1.2rem;
-            border: 1px solid #e3edf6;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            gap: 0.3rem 0.5rem;
-        }
-        .asset-item .label {
-            font-weight: 500;
-            color: #1a3b55;
-            font-size: 0.85rem;
-            min-width: 80px;
-        }
-        .asset-item .hidden-badge {
-            font-size: 0.7rem;
-            color: #6b8a9e;
-            font-style: italic;
-            background: #eef4fa;
-            padding: 0.1rem 0.6rem;
-            border-radius: 30px;
-        }
-        .asset-item input {
-            width: 85px;
-            padding: 0.3rem 0.3rem 0.3rem 0.6rem;
-            border: 1px solid #ccdbe9;
-            border-radius: 40px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            background: #f6faff;
-            text-align: right;
-            outline: none;
-            transition: 0.15s;
-        }
-        .asset-item input:focus {
-            border-color: #2563eb;
-            background: white;
-            box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
-        }
-        .asset-item input.error {
-            border-color: #b91c1c;
-            background: #fee9e9;
-        }
-        .error-msg {
-            color: #b91c1c;
-            font-size: 0.75rem;
-            margin-top: 0.1rem;
-            display: block;
-            min-height: 1.2rem;
-        }
-        .round-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            align-items: center;
-            justify-content: space-between;
-            margin-top: 1rem;
-            border-top: 1px solid #dce6f0;
-            padding-top: 1.3rem;
-        }
-        .btn {
-            background: #1f3f5c;
-            border: none;
-            color: white;
-            font-weight: 600;
-            padding: 0.65rem 2rem;
-            border-radius: 60px;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: 0.1s;
-            box-shadow: 0 4px 10px rgba(26,59,85,0.1);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        .btn:hover:not(:disabled) { background: #0b2a44; transform: scale(0.97); }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-        .btn-outline {
-            background: transparent;
-            color: #1f3f5c;
-            border: 1px solid #b6ccdf;
-            box-shadow: none;
-        }
-        .btn-outline:hover:not(:disabled) { background: #e9f0f7; }
-        .result-block {
-            background: #ecf5fb;
-            border-radius: 1.8rem;
-            padding: 1.2rem 2rem;
-            margin-top: 1.8rem;
-            border-left: 6px solid #2563eb;
-        }
-        .result-block .row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.5rem 3rem;
-        }
-        .result-block .label { font-weight: 500; color: #1c405b; }
-        .result-block .value { font-weight: 700; color: #0b2a42; }
-        .detail-table-wrap {
-            margin-top: 2rem;
-            overflow-x: auto;
-            border-radius: 1.5rem;
-            border: 1px solid #dce6f0;
-            background: white;
-        }
-        .detail-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.9rem;
-            min-width: 700px;
-        }
-        .detail-table th {
-            background: #eaf1f9;
-            color: #0b2a42;
-            font-weight: 600;
-            padding: 0.8rem 0.8rem;
-            text-align: center;
-            border-bottom: 2px solid #c8d8e8;
-            font-size: 0.8rem;
-            letter-spacing: 0.02em;
-            text-transform: uppercase;
-        }
-        .detail-table td {
-            padding: 0.6rem 0.8rem;
-            text-align: center;
-            border-bottom: 1px solid #e6eef6;
-            color: #0a1e2f;
-        }
-        .detail-table .asset-label {
-            text-align: left;
-            font-weight: 500;
-            color: #1a3b55;
-            padding-left: 1.2rem;
-        }
-        .detail-table .total-row td {
-            font-weight: 700;
-            background: #eef5fc;
-            border-top: 2px solid #b6ccdf;
-            padding: 0.8rem 0.8rem;
-        }
-        .detail-table .total-row .asset-label {
-            font-weight: 700;
-            color: #0b2a42;
-        }
-        .reflection-area {
-            background: #f6faff;
-            border-radius: 1.2rem;
-            padding: 1rem 1.5rem;
-            margin-top: 1.2rem;
-            border: 1px dashed #b6ccdf;
-            font-size: 0.9rem;
-            color: #1d405b;
-        }
-        .reflection-area strong { color: #0b2a42; }
-        .footnote {
-            margin-top: 2rem;
-            color: #3d627f;
-            font-size: 0.8rem;
-            text-align: right;
-        }
-        .history-log {
-            background: #f4f9ff;
-            border-radius: 1.5rem;
-            padding: 0.8rem 1.8rem;
-            margin-top: 1.2rem;
-            border: 1px solid #d0e0ee;
-        }
-        .history-log .entry {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem 2rem;
-            padding: 0.3rem 0;
-            border-bottom: 1px solid #dde8f2;
-        }
-        .history-log .entry:last-child { border: none; }
-        .tag { background: #d6e4f2; padding: 0.1rem 0.8rem; border-radius: 30px; font-size: 0.8rem; }
-        
-        /* Navigation bar for multiple pages */
-        .nav-bar {
-            background: #1f3a57;
-            padding: 0.8rem 1.5rem;
-            border-radius: 60px;
-            margin-bottom: 1.8rem;
-            display: flex;
-            gap: 1.5rem;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-        .nav-bar a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.95rem;
-            padding: 0.3rem 1rem;
-            border-radius: 30px;
-            transition: 0.2s;
-        }
-        .nav-bar a:hover {
-            background: rgba(255,255,255,0.15);
-        }
-        .nav-bar a.active {
-            background: rgba(255,255,255,0.2);
-        }
-        
-        @media (max-width: 700px) {
-            .app { padding: 1rem; }
-            .asset-grid { grid-template-columns: 1fr 1fr; }
-            .capital-box { flex-direction: column; align-items: stretch; }
-            .nav-bar { flex-direction: column; align-items: stretch; }
-            .nav-bar a { text-align: center; }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<div class="app">
-    <!-- Navigation Bar -->
-    <div class="nav-bar">
-        <a href="#" class="active">🏠 Game</a>
-        <a href="#" onclick="alert('📊 Results page would go here!'); return false;">📊 Results</a>
-        <a href="#" onclick="alert('📈 Portfolio page would go here!'); return false;">📈 Portfolio</a>
-        <a href="#" onclick="alert('📖 Instructions page would go here!'); return false;">📖 Instructions</a>
+    <div class="app">
+        <!-- Navigation Bar -->
+        <div class="nav-bar">
+            <a href="index.html" class="active">🏠 Game</a>
+            <a href="results.html">📊 Results</a>
+            <a href="portfolio.html">📈 Portfolio</a>
+            <a href="instructions.html">📖 Instructions</a>
+        </div>
+
+        <h1>📊 Set A · Fear vs Opportunity</h1>
+        
+        <div class="game-description">
+            <strong>🎯 The Game:</strong> You start with <strong>$10,000</strong> and face <strong>7 hidden years</strong> (2008–2024).<br>
+            For each round, <strong>allocate your capital</strong> across 9 assets. The returns are <strong>hidden</strong> until you submit.<br>
+            Click <strong>"Done — reveal returns"</strong> to see your performance. Your new capital is reinvested into the next round.
+        </div>
+        
+        <div class="sub">Set A · Fear vs Opportunity · 7 rounds · $10,000 start</div>
+
+        <div id="roundPanel" class="round-panel">
+            <div id="roundHeader" class="round-header">
+                <span class="round-badge" id="roundLabel">Round 1</span>
+                <span class="year-tag" id="yearTag">??? · Hidden year</span>
+            </div>
+
+            <div class="capital-box">
+                <span>💰 Starting capital</span>
+                <span class="value" id="capitalDisplay">10000.00</span>
+                <span>|</span>
+                <span>Remaining to allocate</span>
+                <span class="remaining" id="remainingDisplay">10000.00</span>
+            </div>
+
+            <div id="assetGrid" class="asset-grid"></div>
+            <div id="globalError" class="error-msg"></div>
+
+            <div class="round-actions">
+                <div>
+                    <button class="btn" id="submitRoundBtn">✅ Done — reveal returns</button>
+                    <button class="btn btn-outline" id="resetRoundBtn" style="margin-left:0.8rem;">↺ Reset inputs</button>
+                </div>
+                <div>
+                    <span style="font-weight:500; color:#1f405c;">Allocated: </span>
+                    <span id="allocatedSumDisplay" style="font-weight:700;">0.00</span>
+                </div>
+            </div>
+
+            <div id="resultBlock" class="result-block" style="display:none;">
+                <div class="row">
+                    <div><span class="label">💰 Return amount</span> <span class="value" id="returnAmountDisplay">+0.00</span></div>
+                    <div><span class="label">📈 Return %</span> <span class="value" id="returnPercentDisplay">0.00%</span></div>
+                    <div><span class="label">🔁 New capital</span> <span class="value" id="newCapitalDisplay">0.00</span></div>
+                </div>
+            </div>
+
+            <div id="detailTableWrap" class="detail-table-wrap" style="display:none;">
+                <table class="detail-table" id="detailTable">
+                    <thead>
+                        <tr>
+                            <th>Asset Class</th>
+                            <th>Allocation (%)</th>
+                            <th>Allocation ($)</th>
+                            <th>Market Return (%)</th>
+                            <th>End Value ($)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="detailBody"></tbody>
+                </table>
+                <div class="reflection-area" id="reflectionArea">
+                    <strong>💭 Reflection:</strong> <span id="reflectionText">What surprised you? What would you change next round?</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="history-log" id="historyLog">
+            <div style="font-weight:600; color:#1d3d58; margin-bottom:0.5rem;">📋 Round history</div>
+            <div id="historyEntries"><span style="color:#4d6f8b;">— allocations & results will appear here</span></div>
+        </div>
+        
+        <div class="footnote">Returns are revealed after each submission · capital reinvested each round</div>
     </div>
 
-    <h1>📊 Set A · Fear vs Opportunity</h1>
-    <div class="game-description">
-        <strong>🎯 The Game:</strong> You start with <strong>$10,000</strong> and face <strong>7 hidden years</strong> (2008–2024).<br>
-        For each round, <strong>allocate your capital</strong> across 9 assets. The returns are <strong>hidden</strong> until you submit.<br>
-        Click <strong>“Done — reveal returns”</strong> to see your performance. Your new capital is reinvested into the next round.
-    </div>
-    <div class="sub">Set A · Fear vs Opportunity · 7 rounds · $10,000 start</div>
-
-    <div id="roundPanel" class="round-panel">
-        <div id="roundHeader" class="round-header">
-            <span class="round-badge" id="roundLabel">Round 1</span>
-            <span class="year-tag" id="yearTag">??? · Hidden year</span>
-        </div>
-
-        <div class="capital-box">
-            <span>💰 Starting capital</span>
-            <span class="value" id="capitalDisplay">10000.00</span>
-            <span>|</span>
-            <span>Remaining to allocate</span>
-            <span class="remaining" id="remainingDisplay">10000.00</span>
-        </div>
-
-        <div id="assetGrid" class="asset-grid"></div>
-        <div id="globalError" class="error-msg"></div>
-
-        <div class="round-actions">
-            <div>
-                <button class="btn" id="submitRoundBtn">✅ Done — reveal returns</button>
-                <button class="btn btn-outline" id="resetRoundBtn" style="margin-left:0.8rem;">↺ Reset inputs</button>
-            </div>
-            <div>
-                <span style="font-weight:500; color:#1f405c;">Allocated: </span>
-                <span id="allocatedSumDisplay" style="font-weight:700;">0.00</span>
-            </div>
-        </div>
-
-        <div id="resultBlock" class="result-block" style="display:none;">
-            <div class="row">
-                <div><span class="label">💰 Return amount</span> <span class="value" id="returnAmountDisplay">+0.00</span></div>
-                <div><span class="label">📈 Return %</span> <span class="value" id="returnPercentDisplay">0.00%</span></div>
-                <div><span class="label">🔁 New capital</span> <span class="value" id="newCapitalDisplay">0.00</span></div>
-            </div>
-        </div>
-
-        <div id="detailTableWrap" class="detail-table-wrap" style="display:none;">
-            <table class="detail-table" id="detailTable">
-                <thead>
-                    <tr>
-                        <th>Asset Class</th>
-                        <th>Allocation (%)</th>
-                        <th>Allocation ($)</th>
-                        <th>Market Return (%)</th>
-                        <th>End Value ($)</th>
-                    </tr>
-                </thead>
-                <tbody id="detailBody"></tbody>
-            </table>
-            <div class="reflection-area" id="reflectionArea">
-                <strong>💭 Reflection:</strong> <span id="reflectionText">What surprised you? What would you change next round?</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="history-log" id="historyLog">
-        <div style="font-weight:600; color:#1d3d58; margin-bottom:0.5rem;">📋 Round history</div>
-        <div id="historyEntries"><span style="color:#4d6f8b;">— allocations & results will appear here</span></div>
-    </div>
-    <div class="footnote">Returns are revealed after each submission · capital reinvested each round</div>
-</div>
-
-<script>
-    (function() {
-        // ----- SET A: Fear vs Opportunity -----
-        const ROUNDS_DATA = [
-            { year: "2008", label: "Financial crisis", returns: { "USA Eq": -37.0, "Europe Eq": -45.0, "Japan Eq": -42.1, "China Eq": -51.0, "USA FI": 5.2, "Europe FI": 6.1, "Japan FI": 3.4, "China FI": 9.0, "Cash": 1.4 } },
-            { year: "2017", label: "Growth optimism", returns: { "USA Eq": 21.8, "Europe Eq": 25.0, "Japan Eq": 19.1, "China Eq": 54.0, "USA FI": 3.5, "Europe FI": 0.6, "Japan FI": 0.2, "China FI": -1.2, "Cash": 0.8 } },
-            { year: "2020", label: "Pandemic shock", returns: { "USA Eq": 18.4, "Europe Eq": 5.0, "Japan Eq": 16.0, "China Eq": 30.0, "USA FI": 7.5, "Europe FI": 4.1, "Japan FI": 0.7, "China FI": 3.5, "Cash": 0.5 } },
-            { year: "2012", label: "Stabilisation", returns: { "USA Eq": 16.0, "Europe Eq": 19.0, "Japan Eq": 22.9, "China Eq": 19.0, "USA FI": 4.2, "Europe FI": 10.3, "Japan FI": 1.8, "China FI": 4.0, "Cash": 0.1 } },
-            { year: "2022", label: "Inflation & tightening", returns: { "USA Eq": -18.1, "Europe Eq": -15.0, "Japan Eq": -9.4, "China Eq": -22.0, "USA FI": -13.0, "Europe FI": -17.2, "Japan FI": -5.3, "China FI": 3.1, "Cash": 1.5 } },
-            { year: "2009", label: "Recovery or trap", returns: { "USA Eq": 26.5, "Europe Eq": 32.0, "Japan Eq": 19.0, "China Eq": 62.0, "USA FI": 5.9, "Europe FI": 5.6, "Japan FI": 1.4, "China FI": 1.4, "Cash": 0.1 } },
-            { year: "2024", label: "Momentum vs diversification", returns: { "USA Eq": 25.0, "Europe Eq": 9.0, "Japan Eq": 19.2, "China Eq": 20.0, "USA FI": 1.2, "Europe FI": 1.8, "Japan FI": -2.0, "China FI": 5.5, "Cash": 5.1 } }
-        ];
-
-        let currentRound = 0;
-        let capital = 10000.0;
-        let history = [];
-
-        // DOM refs
-        const roundLabel = document.getElementById('roundLabel');
-        const yearTag = document.getElementById('yearTag');
-        const capitalDisplay = document.getElementById('capitalDisplay');
-        const remainingDisplay = document.getElementById('remainingDisplay');
-        const assetGrid = document.getElementById('assetGrid');
-        const globalError = document.getElementById('globalError');
-        const allocatedSumDisplay = document.getElementById('allocatedSumDisplay');
-        const submitBtn = document.getElementById('submitRoundBtn');
-        const resetBtn = document.getElementById('resetRoundBtn');
-        const resultBlock = document.getElementById('resultBlock');
-        const returnAmountDisplay = document.getElementById('returnAmountDisplay');
-        const returnPercentDisplay = document.getElementById('returnPercentDisplay');
-        const newCapitalDisplay = document.getElementById('newCapitalDisplay');
-        const historyEntries = document.getElementById('historyEntries');
-        const detailTableWrap = document.getElementById('detailTableWrap');
-        const detailBody = document.getElementById('detailBody');
-        const reflectionText = document.getElementById('reflectionText');
-
-        let inputs = {};
-
-        function fmt(v) { return Number(v).toFixed(2); }
-        function getRoundData() { return ROUNDS_DATA[currentRound]; }
-        function getAssetNames() { return Object.keys(getRoundData().returns); }
-
-        function refreshUI() {
-            capitalDisplay.textContent = fmt(capital);
-            let sum = 0;
-            const assetNames = getAssetNames();
-            for (let name of assetNames) {
-                const inp = inputs[name];
-                if (!inp) continue;
-                let val = parseFloat(inp.value);
-                if (isNaN(val) || val < 0) val = 0;
-                sum += val;
-                if (val > capital) inp.classList.add('error');
-                else inp.classList.remove('error');
-            }
-            const remaining = Math.max(0, capital - sum);
-            remainingDisplay.textContent = fmt(remaining);
-            allocatedSumDisplay.textContent = fmt(sum);
-
-            let errorMsg = '';
-            for (let name of assetNames) {
-                const inp = inputs[name];
-                if (!inp) continue;
-                let val = parseFloat(inp.value);
-                if (!isNaN(val) && val > capital) {
-                    errorMsg = `⚠️ ${name} exceeds available capital (${fmt(capital)}).`;
-                    break;
-                }
-            }
-            if (sum > capital) {
-                errorMsg = errorMsg || `⚠️ Total allocation (${fmt(sum)}) exceeds capital (${fmt(capital)}).`;
-            }
-            globalError.textContent = errorMsg;
-            submitBtn.disabled = (errorMsg.length > 0 || sum === 0);
-        }
-
-        function renderAssets() {
-            const assetNames = getAssetNames();
-            let html = '';
-            for (let name of assetNames) {
-                html += `
-                    <div class="asset-item">
-                        <span class="label">${name}</span>
-                        <span class="hidden-badge">🔒 hidden</span>
-                        <input type="number" step="0.01" min="0" data-asset="${name}" value="0.00">
-                    </div>
-                `;
-            }
-            assetGrid.innerHTML = html;
-            inputs = {};
-            document.querySelectorAll('.asset-item input').forEach(inp => {
-                const name = inp.dataset.asset;
-                inputs[name] = inp;
-                inp.addEventListener('input', refreshUI);
-                inp.addEventListener('blur', function() {
-                    let val = parseFloat(this.value);
-                    if (isNaN(val) || val < 0) val = 0;
-                    this.value = fmt(val);
-                    refreshUI();
-                });
-            });
-            refreshUI();
-        }
-
-        function resetInputs() {
-            const assetNames = getAssetNames();
-            for (let name of assetNames) {
-                if (inputs[name]) {
-                    inputs[name].value = '0.00';
-                    inputs[name].classList.remove('error');
-                }
-            }
-            refreshUI();
-        }
-
-        function renderDetailTable(allocationMap, returnsMap, totalCapital) {
-            const assetNames = getAssetNames();
-            let rows = '';
-            let totalAllocPct = 0, totalAllocDol = 0, totalEndVal = 0;
-            for (let name of assetNames) {
-                const allocDol = allocationMap[name] || 0;
-                const allocPct = totalCapital > 0 ? (allocDol / totalCapital) * 100 : 0;
-                const ret = returnsMap[name] || 0;
-                const endVal = allocDol * (1 + ret / 100);
-                totalAllocPct += allocPct;
-                totalAllocDol += allocDol;
-                totalEndVal += endVal;
-                const retStr = ret >= 0 ? `+${fmt(ret)}` : fmt(ret);
-                rows += `
-                    <tr>
-                        <td class="asset-label">${name}</td>
-                        <td>${fmt(allocPct)}%</td>
-                        <td>${fmt(allocDol)}</td>
-                        <td>${retStr}%</td>
-                        <td>${fmt(endVal)}</td>
-                    </tr>
-                `;
-            }
-            rows += `
-                <tr class="total-row">
-                    <td class="asset-label"><strong>TOTAL</strong></td>
-                    <td>${fmt(totalAllocPct)}%</td>
-                    <td>${fmt(totalAllocDol)}</td>
-                    <td>—</td>
-                    <td><strong>${fmt(totalEndVal)}</strong></td>
-                </tr>
-            `;
-            detailBody.innerHTML = rows;
-            detailTableWrap.style.display = 'block';
-        }
-
-        function submitAllocation() {
-            const assetNames = getAssetNames();
-            const returns = getRoundData().returns;
-            let allocated = 0;
-            let allocationMap = {};
-            let error = false;
-
-            for (let name of assetNames) {
-                const inp = inputs[name];
-                let val = parseFloat(inp.value);
-                if (isNaN(val) || val < 0) val = 0;
-                if (val > capital) error = true;
-                allocated += val;
-                allocationMap[name] = val;
-            }
-            if (error || allocated > capital || allocated === 0) {
-                globalError.textContent = error ? '⚠️ Allocation exceeds capital.' : '⚠️ Allocate at least some capital.';
-                return;
-            }
-
-            let totalReturn = 0;
-            for (let name of assetNames) {
-                const ret = returns[name] / 100;
-                totalReturn += allocationMap[name] * ret;
-            }
-            const returnPercent = (totalReturn / capital) * 100;
-            const newCapital = capital + totalReturn;
-
-            // REVEAL the year and returns
-            const data = getRoundData();
-            yearTag.textContent = `${data.year} · ${data.label}`;
-
-            history.push({
-                round: currentRound + 1,
-                year: data.year,
-                allocation: { ...allocationMap },
-                returnAmount: totalReturn,
-                returnPercent: returnPercent,
-                newCapital: newCapital
-            });
-
-            resultBlock.style.display = 'block';
-            returnAmountDisplay.textContent = (totalReturn >= 0 ? '+' : '') + fmt(totalReturn);
-            returnPercentDisplay.textContent = fmt(returnPercent) + '%';
-            newCapitalDisplay.textContent = fmt(newCapital);
-
-            // SHOW the detailed table with all returns
-            renderDetailTable(allocationMap, returns, capital);
-            reflectionText.textContent = 'What surprised you? What would you change next round?';
-
-            capital = newCapital;
-
-            if (currentRound < ROUNDS_DATA.length - 1) {
-                currentRound++;
-                updateRoundHeader();
-                renderAssets();
-                resultBlock.style.display = 'none';
-                detailTableWrap.style.display = 'none';
-                renderHistory();
-                globalError.textContent = '';
-            } else {
-                submitBtn.disabled = true;
-                submitBtn.textContent = '🏁 Game Over';
-                globalError.textContent = '🎉 All 7 rounds completed! Check your final capital above.';
-                renderHistory();
-            }
-            refreshUI();
-        }
-
-        function updateRoundHeader() {
-            const data = getRoundData();
-            roundLabel.textContent = `Round ${currentRound + 1}`;
-            yearTag.textContent = `??? · Hidden year`;
-        }
-
-        function renderHistory() {
-            if (history.length === 0) {
-                historyEntries.innerHTML = `<span style="color:#4d6f8b;">— allocations & results will appear here</span>`;
-                return;
-            }
-            let html = '';
-            for (let h of history) {
-                const allocStr = Object.entries(h.allocation)
-                    .filter(([k,v]) => v > 0)
-                    .map(([k,v]) => `${k}: ${fmt(v)}`)
-                    .join(' · ');
-                html += `
-                    <div class="entry">
-                        <span class="tag">R${h.round} (${h.year})</span>
-                        <span>💰 ${fmt(h.returnAmount)} (${fmt(h.returnPercent)}%)</span>
-                        <span>🔁 capital: ${fmt(h.newCapital)}</span>
-                        <span style="font-size:0.8rem; color:#2b577a;">${allocStr}</span>
-                    </div>
-                `;
-            }
-            historyEntries.innerHTML = html;
-        }
-
-        function resetRound() {
-            resetInputs();
-            resultBlock.style.display = 'none';
-            detailTableWrap.style.display = 'none';
-            globalError.textContent = '';
-            submitBtn.disabled = false;
-            // Reset year tag back to hidden
-            const data = getRoundData();
-            yearTag.textContent = `??? · Hidden year`;
-            if (currentRound === ROUNDS_DATA.length - 1 && history.length === ROUNDS_DATA.length) {
-                submitBtn.disabled = true;
-                submitBtn.textContent = '🏁 Game Over';
-            } else {
-                submitBtn.textContent = '✅ Done — reveal returns';
-            }
-        }
-
-        function init() {
-            currentRound = 0;
-            capital = 10000.0;
-            history = [];
-            updateRoundHeader();
-            renderAssets();
-            renderHistory();
-            resultBlock.style.display = 'none';
-            detailTableWrap.style.display = 'none';
-            submitBtn.disabled = false;
-            submitBtn.textContent = '✅ Done — reveal returns';
-            globalError.textContent = '';
-            refreshUI();
-        }
-
-        submitBtn.addEventListener('click', submitAllocation);
-        resetBtn.addEventListener('click', resetRound);
-        init();
-    })();
-</script>
+    <script src="script.js"></script>
 </body>
 </html>
