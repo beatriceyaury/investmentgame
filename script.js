@@ -13,6 +13,7 @@
     let currentRound = 0;
     let capital = 10000.0;
     let history = [];
+    let allRoundReturns = []; // Store all returns data for results page
 
     // DOM refs
     const roundLabel = document.getElementById('roundLabel');
@@ -148,6 +149,34 @@
         detailTableWrap.style.display = 'block';
     }
 
+    // Save data to localStorage (and backend if available)
+    function saveAllData() {
+        const data = {
+            history: history,
+            currentCapital: capital,
+            allRoundReturns: allRoundReturns
+        };
+        
+        // Save to localStorage
+        localStorage.setItem('gameHistory', JSON.stringify(history));
+        localStorage.setItem('currentCapital', capital.toString());
+        localStorage.setItem('allRoundReturns', JSON.stringify(allRoundReturns));
+        localStorage.setItem('gameData', JSON.stringify(data));
+        
+        // Try to save to backend
+        try {
+            fetch('/api/save', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            }).catch(e => console.log('Backend not available, using localStorage only'));
+        } catch(e) {
+            // Backend not available, continue with localStorage
+        }
+    }
+
     function submitAllocation() {
         const assetNames = getAssetNames();
         const returns = getRoundData().returns;
@@ -180,29 +209,41 @@
         const data = getRoundData();
         yearTag.textContent = `${data.year} · ${data.label}`;
 
+        // Store the returns for this round
+        const roundReturnData = {
+            year: data.year,
+            label: data.label,
+            returns: { ...returns },
+            allocations: { ...allocationMap },
+            totalReturn: totalReturn,
+            returnPercent: returnPercent,
+            newCapital: newCapital
+        };
+        allRoundReturns.push(roundReturnData);
+
         history.push({
             round: currentRound + 1,
             year: data.year,
+            label: data.label,
             allocation: { ...allocationMap },
             returnAmount: totalReturn,
             returnPercent: returnPercent,
-            newCapital: newCapital
+            newCapital: newCapital,
+            returns: { ...returns }
         });
-
-        // Save to localStorage for other pages
-        localStorage.setItem('gameHistory', JSON.stringify(history));
-        localStorage.setItem('currentCapital', newCapital.toString());
 
         resultBlock.style.display = 'block';
         returnAmountDisplay.textContent = (totalReturn >= 0 ? '+' : '') + fmt(totalReturn);
         returnPercentDisplay.textContent = fmt(returnPercent) + '%';
         newCapitalDisplay.textContent = fmt(newCapital);
 
-        // SHOW the detailed table with all returns
         renderDetailTable(allocationMap, returns, capital);
         reflectionText.textContent = 'What surprised you? What would you change next round?';
 
         capital = newCapital;
+
+        // Save all data
+        saveAllData();
 
         if (currentRound < ROUNDS_DATA.length - 1) {
             currentRound++;
@@ -222,7 +263,6 @@
     }
 
     function updateRoundHeader() {
-        const data = getRoundData();
         roundLabel.textContent = `Round ${currentRound + 1}`;
         yearTag.textContent = `??? · Hidden year`;
     }
@@ -256,8 +296,6 @@
         detailTableWrap.style.display = 'none';
         globalError.textContent = '';
         submitBtn.disabled = false;
-        // Reset year tag back to hidden
-        const data = getRoundData();
         yearTag.textContent = `??? · Hidden year`;
         if (currentRound === ROUNDS_DATA.length - 1 && history.length === ROUNDS_DATA.length) {
             submitBtn.disabled = true;
@@ -268,9 +306,54 @@
     }
 
     function init() {
+        // Try to load from localStorage first
+        const savedData = localStorage.getItem('gameData');
+        if (savedData) {
+            try {
+                const data = JSON.parse(savedData);
+                if (data.history && data.history.length > 0) {
+                    history = data.history;
+                    capital = data.currentCapital || 10000.0;
+                    allRoundReturns = data.allRoundReturns || [];
+                    
+                    // Find the current round
+                    if (history.length < ROUNDS_DATA.length) {
+                        currentRound = history.length;
+                    } else {
+                        currentRound = ROUNDS_DATA.length - 1;
+                        submitBtn.disabled = true;
+                        submitBtn.textContent = '🏁 Game Over';
+                    }
+                    
+                    updateRoundHeader();
+                    renderAssets();
+                    renderHistory();
+                    refreshUI();
+                    
+                    // Show results if there's history
+                    if (history.length > 0) {
+                        const last = history[history.length - 1];
+                        yearTag.textContent = `${last.year} · ${last.label}`;
+                        resultBlock.style.display = 'block';
+                        returnAmountDisplay.textContent = (last.returnAmount >= 0 ? '+' : '') + fmt(last.returnAmount);
+                        returnPercentDisplay.textContent = fmt(last.returnPercent) + '%';
+                        newCapitalDisplay.textContent = fmt(last.newCapital);
+                        renderDetailTable(last.allocation, last.returns, capital - last.returnAmount);
+                    }
+                    
+                    console.log('✅ Loaded saved data:', { history: history.length, capital, allRoundReturns: allRoundReturns.length });
+                    return;
+                }
+            } catch(e) {
+                console.log('Error loading saved data:', e);
+            }
+        }
+        
+        // If no saved data, start fresh
         currentRound = 0;
         capital = 10000.0;
         history = [];
+        allRoundReturns = [];
         updateRoundHeader();
         renderAssets();
         renderHistory();
@@ -280,6 +363,7 @@
         submitBtn.textContent = '✅ Done — reveal returns';
         globalError.textContent = '';
         refreshUI();
+        console.log('🆕 Started fresh game');
     }
 
     submitBtn.addEventListener('click', submitAllocation);
