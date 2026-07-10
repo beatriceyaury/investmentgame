@@ -93,6 +93,17 @@
         }
         .stat-card .stat-value.positive { color: #0b6e3f; }
         .stat-card .stat-value.negative { color: #b22234; }
+        .return-summary {
+            margin-bottom: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: #eef5fc;
+            border-radius: 0.8rem;
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            font-size: 0.9rem;
+        }
+        .return-summary span { font-weight: 500; }
     </style>
 </head>
 <body>
@@ -116,31 +127,96 @@
     </div>
 
     <script>
-        // Load results from localStorage
         function loadResults() {
             const container = document.getElementById('resultsContainer');
-            const history = JSON.parse(localStorage.getItem('gameHistory') || '[]');
-            const allReturns = JSON.parse(localStorage.getItem('allRoundReturns') || '[]');
-
-            if (history.length === 0 && allReturns.length === 0) {
-                container.innerHTML = `
-                    <div class="no-data">
-                        <p>📭 No results yet. Play the game first!</p>
-                        <p style="font-size:0.9rem; margin-top:0.5rem;">Complete at least one round in the Game tab to see results here.</p>
-                    </div>
-                `;
-                return;
+            
+            // Try to get data from multiple sources
+            let history = [];
+            let allReturns = [];
+            
+            // 1. Try from gameData (most complete)
+            const gameDataStr = localStorage.getItem('gameData');
+            if (gameDataStr) {
+                try {
+                    const gameData = JSON.parse(gameDataStr);
+                    history = gameData.history || [];
+                    allReturns = gameData.allRoundReturns || [];
+                    console.log('📊 Loaded from gameData:', { history: history.length, returns: allReturns.length });
+                } catch(e) {}
+            }
+            
+            // 2. If empty, try individual storage
+            if (history.length === 0) {
+                const historyStr = localStorage.getItem('gameHistory');
+                if (historyStr) {
+                    try {
+                        history = JSON.parse(historyStr);
+                        console.log('📊 Loaded from gameHistory:', history.length);
+                    } catch(e) {}
+                }
+            }
+            
+            if (allReturns.length === 0) {
+                const returnsStr = localStorage.getItem('allRoundReturns');
+                if (returnsStr) {
+                    try {
+                        allReturns = JSON.parse(returnsStr);
+                        console.log('📊 Loaded from allRoundReturns:', allReturns.length);
+                    } catch(e) {}
+                }
             }
 
-            let html = '';
-            
-            // If we have the detailed returns data
+            // If we have returns data, use it
             if (allReturns.length > 0) {
+                let html = '';
+                
+                // Summary stats
+                const totalRounds = allReturns.length;
+                let totalReturn = 0;
+                let lastCapital = 10000;
+                
+                allReturns.forEach((round, index) => {
+                    totalReturn += round.totalReturn || 0;
+                    if (index === allReturns.length - 1) {
+                        lastCapital = round.newCapital || 10000;
+                    }
+                });
+                
+                const totalReturnPct = ((lastCapital / 10000) - 1) * 100;
+                
+                html += `
+                    <div class="summary-stats">
+                        <div class="stat-card">
+                            <div class="stat-label">📊 Rounds Completed</div>
+                            <div class="stat-value">${totalRounds} / 7</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">💰 Final Capital</div>
+                            <div class="stat-value">$${lastCapital.toFixed(2)}</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">📈 Total Return</div>
+                            <div class="stat-value ${totalReturn >= 0 ? 'positive' : 'negative'}">
+                                ${totalReturn >= 0 ? '+' : ''}$${totalReturn.toFixed(2)}
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">📈 Return %</div>
+                            <div class="stat-value ${totalReturnPct >= 0 ? 'positive' : 'negative'}">
+                                ${totalReturnPct >= 0 ? '+' : ''}${totalReturnPct.toFixed(2)}%
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Show each round
                 allReturns.forEach((round, index) => {
                     const roundNum = index + 1;
                     const year = round.year || 'Unknown';
                     const label = round.label || '';
                     const returns = round.returns || {};
+                    const roundReturn = round.totalReturn || 0;
+                    const roundReturnPct = round.returnPercent || 0;
 
                     html += `
                         <div class="round-results">
@@ -148,6 +224,11 @@
                                 <span>Round ${roundNum}</span>
                                 <span class="year-badge">${year} · ${label}</span>
                             </h3>
+                            <div class="return-summary">
+                                <span>💰 Return: ${roundReturn >= 0 ? '+' : ''}$${roundReturn.toFixed(2)}</span>
+                                <span>📈 Return %: ${roundReturnPct >= 0 ? '+' : ''}${roundReturnPct.toFixed(2)}%</span>
+                                <span>🔁 New Capital: $${round.newCapital?.toFixed(2) || 'N/A'}</span>
+                            </div>
                             <div class="market-returns-grid">
                     `;
 
@@ -169,31 +250,80 @@
                         </div>
                     `;
                 });
-            } else {
-                // Fallback: show from history
+
+                container.innerHTML = html;
+                return;
+            }
+
+            // Fallback: show from history
+            if (history.length > 0) {
+                let html = '';
                 history.forEach((h, index) => {
                     const roundNum = index + 1;
+                    const returns = h.returns || {};
+                    
                     html += `
                         <div class="round-results">
                             <h3>
                                 <span>Round ${roundNum}</span>
                                 <span class="year-badge">${h.year || 'Unknown'}</span>
                             </h3>
+                            <div class="return-summary">
+                                <span>💰 Return: ${h.returnAmount >= 0 ? '+' : ''}$${h.returnAmount?.toFixed(2) || '0.00'}</span>
+                                <span>📈 Return %: ${h.returnPercent >= 0 ? '+' : ''}${h.returnPercent?.toFixed(2) || '0.00'}%</span>
+                                <span>🔁 New Capital: $${h.newCapital?.toFixed(2) || 'N/A'}</span>
+                            </div>
                             <div class="market-returns-grid">
-                                <p style="color: #6b8a9e; grid-column: 1 / -1; text-align: center;">
-                                    📊 Detailed returns data not available. Play the game to generate complete data.
-                                </p>
+                    `;
+
+                    if (Object.keys(returns).length > 0) {
+                        const sortedAssets = Object.keys(returns).sort();
+                        sortedAssets.forEach(asset => {
+                            const ret = returns[asset];
+                            const sign = ret >= 0 ? '+' : '';
+                            const className = ret >= 0 ? 'positive' : 'negative';
+                            html += `
+                                <div class="return-item">
+                                    <span class="asset-name">${asset}</span>
+                                    <span class="return-value ${className}">${sign}${ret.toFixed(1)}%</span>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        html += `<p style="color: #6b8a9e; grid-column: 1 / -1; text-align: center;">📊 Returns data available in game data</p>`;
+                    }
+
+                    html += `
                             </div>
                         </div>
                     `;
                 });
+                container.innerHTML = html;
+                return;
             }
 
-            container.innerHTML = html;
+            // No data at all
+            container.innerHTML = `
+                <div class="no-data">
+                    <p>📭 No results yet. Play the game first!</p>
+                    <p style="font-size:0.9rem; margin-top:0.5rem;">Complete at least one round in the Game tab to see results here.</p>
+                    <p style="font-size:0.9rem; margin-top:0.5rem; color:#2563eb;">
+                        <a href="index.html" style="color:#2563eb; text-decoration:underline;">→ Go to Game</a>
+                    </p>
+                </div>
+            `;
         }
 
-        // Load data when page loads
+        // Auto-refresh data when returning to this page
         document.addEventListener('DOMContentLoaded', loadResults);
+        
+        // Listen for storage changes (if data is updated in another tab)
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'gameData' || e.key === 'gameHistory' || e.key === 'allRoundReturns') {
+                console.log('🔄 Data updated, refreshing results...');
+                loadResults();
+            }
+        });
     </script>
 </body>
 </html>
