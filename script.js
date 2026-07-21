@@ -278,8 +278,8 @@
                 
                 if (fieldName === 'dollar') {
                     val = roundToTwo(val);
-                    // Relaxed single-field threshold (allow up to +$0.50 above capital while typing)
-                    if (val > capital + 0.50) {
+                    // Relaxed single-field threshold (allow up to +$1.00 above capital while typing)
+                    if (val > capital + 1.00) {
                         this.classList.add('error');
                     } else {
                         this.classList.remove('error');
@@ -294,8 +294,8 @@
                         }
                     }
                 } else if (fieldName === 'percent') {
-                    // Relaxed single-field threshold (allow up to 101% while typing)
-                    if (val > 100.5) {
+                    // Relaxed single-field threshold (allow up to 101.5% while typing)
+                    if (val > 101.5) {
                         this.classList.add('error');
                     } else {
                         this.classList.remove('error');
@@ -364,20 +364,20 @@
         
         let errorMsg = '';
         
-        // Dynamic, relaxed tolerance for floating point variations:
-        // Dollar allowance: up to +$0.50 margin
-        // Percentage allowance: up to 1.5% margin
-        if (sumDollar > capital + 0.50) {
+        // Relaxed tolerance for rounding:
+        // Dollar allowance: up to +$1.00 margin
+        // Percentage allowance: up to 2.0% margin
+        if (sumDollar > capital + 1.00) {
             errorMsg = `⚠️ Total allocation ($${fmt(sumDollar)}) exceeds capital ($${fmt(capital)}).`;
         } else if ((currentMode === 'percent' || currentMode === 'both') && sumDollar > 0.01) {
-            if (Math.abs(sumPercent - 100) > 1.5) {
+            if (Math.abs(sumPercent - 100) > 2.0) {
                 errorMsg = `⚠️ Total percentage (${sumPercent.toFixed(1)}%) doesn't equal 100%.`;
             }
         }
         
-        // Individual overage checks with relaxed margin
+        // Individual overage checks with $1.00 margin
         for (let name of assetNames) {
-            if (inputValues[name]?.dollar > capital + 0.50) {
+            if (inputValues[name]?.dollar > capital + 1.00) {
                 errorMsg = `⚠️ ${name} exceeds available capital ($${fmt(capital)}).`;
                 break;
             }
@@ -420,7 +420,7 @@
             
             dollarAmt = roundToTwo(dollarAmt);
             
-            if (dollarAmt > capital + 0.50) {
+            if (dollarAmt > capital + 1.00) {
                 error = true;
             }
             allocated += dollarAmt;
@@ -429,12 +429,12 @@
 
         allocated = roundToTwo(allocated);
 
-        if (error || allocated > capital + 0.50 || allocated < 0.01) {
+        if (error || allocated > capital + 1.00 || allocated < 0.01) {
             globalError.textContent = error ? '⚠️ Allocation exceeds capital.' : '⚠️ Allocate at least some capital.';
             return;
         }
 
-        // Sweeps any micro-leftovers into Cash automatically
+        // Sweeps any micro-leftovers (or up to $1.00 difference) into Cash automatically
         const remaining = roundToTwo(capital - allocated);
         if (Math.abs(remaining) > 0.001) {
             allocationMap['Cash'] = roundToTwo((allocationMap['Cash'] || 0) + remaining);
