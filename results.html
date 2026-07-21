@@ -254,6 +254,19 @@
             color: #6b8a9e;
         }
         
+        .remaining-rounds-message {
+            text-align: center;
+            padding: 1.5rem;
+            background: #f8fbfe;
+            border-radius: 1.5rem;
+            border: 1px dashed #dce6f0;
+            margin-top: 1rem;
+        }
+        
+        .remaining-rounds-message p {
+            color: #6b8a9e;
+        }
+        
         @media (max-width: 700px) {
             .performance-highlights {
                 grid-template-columns: 1fr;
@@ -316,6 +329,9 @@
             "2024": { theme: "Momentum vs diversification", label: "Momentum vs diversification", newsSignals: ["Innovation optimism expands further", "Markets question whether leadership is too concentrated", "Policy easing expectations rise"], best: "USA Equity", worst: "Japan Fixed Income", returns: { "USA Eq": 25.0, "Europe Eq": 9.0, "Japan Eq": 19.2, "China Eq": 20.0, "USA FI": 1.2, "Europe FI": 1.8, "Japan FI": -2.0, "China FI": 5.5, "Cash": 5.1 } }
         };
 
+        // Order of rounds for display
+        const ROUND_ORDER = ["2008", "2017", "2020", "2012", "2022", "2009", "2024"];
+
         function loadResults() {
             const container = document.getElementById('resultsContainer');
             
@@ -362,7 +378,7 @@
             let html = `
                 <div class="group-header">
                     <h2>🎯 Fear vs Opportunity</h2>
-                    <p>Your performance across ${totalRounds} completed rounds</p>
+                    <p>Your performance across ${totalRounds} completed round${totalRounds > 1 ? 's' : ''}</p>
                     <div class="group-themes">
                         <span class="theme">📉 Reaction to Crisis</span>
                         <span class="theme">📈 Ability to buy after fear</span>
@@ -397,7 +413,7 @@
                 </div>
             `;
 
-            // Show each completed round
+            // Show ONLY completed rounds
             history.forEach((h, index) => {
                 const roundNum = index + 1;
                 const year = h.year;
@@ -463,10 +479,13 @@
             // Add message about remaining rounds
             const remaining = 7 - history.length;
             if (remaining > 0) {
+                const nextRoundNum = history.length + 1;
                 html += `
-                    <div style="text-align:center; padding:1.5rem; background:#f8fbfe; border-radius:1.5rem; border:1px dashed #dce6f0; margin-top:1rem;">
-                        <p style="color:#6b8a9e;">
-                            🔒 ${remaining} round${remaining > 1 ? 's' : ''} remaining — complete them in the Game tab!
+                    <div class="remaining-rounds-message">
+                        <p>
+                            🔒 ${remaining} round${remaining > 1 ? 's' : ''} remaining — 
+                            <a href="index.html" style="color:#2563eb; text-decoration:underline;">continue playing in the Game tab</a>
+                            ${remaining === 1 ? ` (Round ${nextRoundNum} is next!)` : ''}
                         </p>
                     </div>
                 `;
