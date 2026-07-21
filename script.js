@@ -667,6 +667,50 @@
     resetBtn.addEventListener('click', resetRound);
     resetAllBtn.addEventListener('click', resetAllGame);
 
+    function performReset() {
+    currentRound = 0;
+    capital = 10000.0;
+    history = [];
+    allRoundReturns = [];
+    
+    const assetNames = getAssetNames();
+    assetNames.forEach(name => {
+        inputValues[name] = { dollar: 0, percent: 0 };
+    });
+    
+    // Clear localStorage
+    localStorage.removeItem('gameHistory');
+    localStorage.removeItem('currentCapital');
+    localStorage.removeItem('allRoundReturns');
+    localStorage.removeItem('gameData');
+    
+    // TRIGGER STORAGE EVENT FOR OTHER PAGES
+    // This tells the Results and Portfolio pages to refresh
+    localStorage.setItem('gameReset', Date.now().toString());
+    
+    // Update UI
+    updateRoundHeader();
+    renderAssets();
+    renderHistory();
+    
+    resultBlock.style.display = 'none';
+    detailTableWrap.style.display = 'none';
+    
+    submitBtn.disabled = false;
+    submitBtn.textContent = '✅ Done — reveal returns';
+    globalError.textContent = '';
+    yearTag.textContent = '??? · Hidden year';
+    
+    refreshUI();
+    
+    globalError.textContent = '✅ Game reset successfully! Starting fresh with $10,000.';
+    globalError.style.color = '#0b6e3f';
+    setTimeout(() => {
+        globalError.textContent = '';
+        globalError.style.color = '#b91c1c';
+    }, 3000);
+}
+
     // ----- Start -----
     init();
 })();
