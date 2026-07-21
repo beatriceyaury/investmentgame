@@ -61,6 +61,11 @@
             color: #0b2a42;
         }
         
+        .highlight-box.warning {
+            border-left-color: #dc2626;
+            background: #fef2f2;
+        }
+        
         .step-number {
             display: inline-block;
             background: #1f3a57;
@@ -209,10 +214,45 @@
         .footer-note {
             margin-top: 2rem;
             padding: 1rem 1.5rem;
-            background: #f3f8fe;
+            background: linear-gradient(135deg, #f0f7fe, #e5eff9);
             border-radius: 1rem;
             text-align: center;
             color: #1a3b55;
+            border: 1px solid #dce8f5;
+        }
+        
+        .strategy-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
+            margin: 0.8rem 0;
+        }
+        
+        .strategy-card {
+            background: #f8fbfe;
+            padding: 1rem 1.2rem;
+            border-radius: 1rem;
+            border: 1px solid #e8eef6;
+            text-align: center;
+        }
+        
+        .strategy-card .strategy-icon {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+        
+        .strategy-card .strategy-title {
+            font-weight: 600;
+            color: #0b2a42;
+            font-size: 0.9rem;
+        }
+        
+        .strategy-card .strategy-desc {
+            color: #6b8a9e;
+            font-size: 0.8rem;
+            margin-top: 0.2rem;
+            line-height: 1.4;
         }
         
         @media (max-width: 700px) {
@@ -221,6 +261,10 @@
             }
             
             .tip-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .strategy-grid {
                 grid-template-columns: 1fr;
             }
             
@@ -275,7 +319,7 @@
             <!-- Section 1: The Challenge -->
             <div class="instruction-section">
                 <h3><span class="icon">🎯</span> The Challenge</h3>
-                <p>You start with <strong>$10,000</strong> and face <strong>7 hidden years</strong> of market history (2008–2024).</p>
+                <p>You start with <strong>$10,000</strong> and face <strong>7 hidden years</strong> of market history.</p>
                 <p>Your goal: <strong>maximize your final capital</strong> by allocating across 9 asset classes each round.</p>
                 <div class="highlight-box">
                     <strong>💡 Key Insight:</strong> You must allocate your capital <em>before</em> knowing that year's returns, simulating real-world investment decisions.
@@ -390,7 +434,45 @@
                 </div>
             </div>
 
-            
+            <!-- Section 6: Strategy Tips -->
+            <div class="instruction-section">
+                <h3><span class="icon">💡</span> Strategy Tips</h3>
+                <div class="strategy-grid">
+                    <div class="strategy-card">
+                        <span class="strategy-icon">🌍</span>
+                        <div class="strategy-title">Diversify Wisely</div>
+                        <div class="strategy-desc">Different assets perform differently in various market conditions</div>
+                    </div>
+                    <div class="strategy-card">
+                        <span class="strategy-icon">📊</span>
+                        <div class="strategy-title">Consider Asset Mix</div>
+                        <div class="strategy-desc">Think about how equities, fixed income, and cash behave in different environments</div>
+                    </div>
+                    <div class="strategy-card">
+                        <span class="strategy-icon">🎯</span>
+                        <div class="strategy-title">Stay Disciplined</div>
+                        <div class="strategy-desc">Don't let emotions drive your decisions — stick to your strategy</div>
+                    </div>
+                    <div class="strategy-card">
+                        <span class="strategy-icon">📈</span>
+                        <div class="strategy-title">Think Long-Term</div>
+                        <div class="strategy-desc">One round doesn't define your performance — focus on the full 7 rounds</div>
+                    </div>
+                    <div class="strategy-card">
+                        <span class="strategy-icon">💵</span>
+                        <div class="strategy-title">Cash is Safe</div>
+                        <div class="strategy-desc">Sometimes holding cash can protect your capital during uncertainty</div>
+                    </div>
+                    <div class="strategy-card">
+                        <span class="strategy-icon">🔄</span>
+                        <div class="strategy-title">Learn and Adapt</div>
+                        <div class="strategy-desc">Review your performance each round and adjust your approach</div>
+                    </div>
+                </div>
+                <div class="highlight-box">
+                    <strong>🏆 The Goal:</strong> Maximize your final capital after 7 rounds. Every decision matters!
+                </div>
+            </div>
 
             <!-- Section 7: Tracking Your Performance -->
             <div class="instruction-section">
@@ -403,54 +485,20 @@
                 </ul>
             </div>
 
-            <!-- Section 8: Tips for Success -->
-            <div class="instruction-section">
-                <h3><span class="icon">💡</span> Tips for Success</h3>
-                <div class="tip-grid">
-                    <div class="tip-card">
-                        <div class="tip-title">🌍 Diversify</div>
-                        <div class="tip-text">Spreading your capital across different asset classes can reduce risk.</div>
-                    </div>
-                    <div class="tip-card">
-                        <div class="tip-title">🔄 Consider the cycle</div>
-                        <div class="tip-text">Some assets perform better in certain market conditions.</div>
-                    </div>
-                    <div class="tip-card">
-                        <div class="tip-title">📝 Learn from each round</div>
-                        <div class="tip-text">Use the reflection area to note what worked and what didn't.</div>
-                    </div>
-                    <div class="tip-card">
-                        <div class="tip-title">😌 Don't panic</div>
-                        <div class="tip-text">Negative returns in one round can be recovered in the next.</div>
-                    </div>
-                    <div class="tip-card">
-                        <div class="tip-title">💵 Cash is an option</div>
-                        <div class="tip-text">Sometimes holding cash can protect you during market downturns.</div>
-                    </div>
-                    <div class="tip-card">
-                        <div class="tip-title">🎯 Stay focused</div>
-                        <div class="tip-text">Keep your long-term goal in mind — maximizing final capital after 7 rounds.</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Section 9: Reset Game -->
+            <!-- Section 8: Resetting the Game -->
             <div class="instruction-section">
                 <h3><span class="icon">🔄</span> Resetting the Game</h3>
                 <p>If you want to start over, click the <strong style="color:#dc2626;">"Reset Entire Game"</strong> button at the bottom of the game page.</p>
-                <div class="highlight-box">
+                <div class="highlight-box warning">
                     <strong>⚠️ Warning:</strong> This will delete all your progress, history, and start you back at Round 1 with $10,000. This action cannot be undone!
                 </div>
             </div>
 
             <!-- Footer -->
             <div class="footer-note">
-                <p>🏆 <strong>The Winner:</strong> The player with the highest final capital after 7 rounds wins!</p>
-                <p style="font-size:0.9rem; margin-top:0.3rem; color:#6b8a9e;">Good luck — may your returns be positive! 🚀</p>
+                <p>🏆 Good luck — may your returns be positive! 🚀</p>
             </div>
         </div>
-
-        <div class="footnote">Last updated: July 2026</div>
     </div>
 </body>
 </html>
