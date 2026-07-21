@@ -21,7 +21,6 @@
     const yearTag = document.getElementById('yearTag');
     const capitalDisplay = document.getElementById('capitalDisplay');
     const remainingDisplay = document.getElementById('remainingDisplay');
-    const remainingDisplaySmall = document.getElementById('remainingDisplaySmall');
     const assetGrid = document.getElementById('assetGrid');
     const globalError = document.getElementById('globalError');
     const allocatedSumDisplay = document.getElementById('allocatedSumDisplay');
@@ -63,12 +62,14 @@
     function getRoundData() { return ROUNDS_DATA[currentRound]; }
     function getAssetNames() { return Object.keys(getRoundData().returns); }
 
+    // ----- Reset All Game -----
     function resetAllGame() {
         if (history.length === 0) {
             performReset();
             return;
         }
-        if (confirm('⚠️ Are you sure you want to reset the entire game?\n\nThis will delete all your progress, history, and start you back at Round 1 with $10,000.')) {
+        
+        if (confirm('⚠️ Are you sure you want to reset the entire game?\n\nThis will delete all your progress, history, and start you back at Round 1 with $10,000.\n\nThis action cannot be undone!')) {
             performReset();
         }
     }
@@ -105,6 +106,7 @@
         refreshUI();
     }
 
+    // ----- Input Mode Management -----
     function setMode(mode) {
         currentMode = mode;
         [modeDollar, modePercent, modeBoth].forEach(btn => {
@@ -117,6 +119,7 @@
         renderAssets();
     }
 
+    // ----- Quick Actions -----
     function applyQuickAction(type) {
         const assetNames = getAssetNames();
         
@@ -136,8 +139,10 @@
             const equityAssets = ['USA Eq', 'Europe Eq', 'Japan Eq', 'China Eq'];
             const fiAssets = ['USA FI', 'Europe FI', 'Japan FI', 'China FI'];
             
-            const equityEach = 70 / equityAssets.length;
-            const fiEach = 30 / fiAssets.length;
+            const equityPct = 70;
+            const fiPct = 30;
+            const equityEach = equityPct / equityAssets.length;
+            const fiEach = fiPct / fiAssets.length;
             
             assetNames.forEach(name => {
                 let val = 0;
@@ -148,6 +153,9 @@
                 } else if (fiAssets.includes(name)) {
                     pct = fiEach;
                     val = roundToTwo((fiEach / 100) * capital);
+                } else if (name === 'Cash') {
+                    pct = 0;
+                    val = 0;
                 }
                 inputValues[name] = { dollar: val, percent: pct };
             });
@@ -155,8 +163,10 @@
             const equityAssets = ['USA Eq', 'Europe Eq', 'Japan Eq', 'China Eq'];
             const fiAssets = ['USA FI', 'Europe FI', 'Japan FI', 'China FI'];
             
-            const equityEach = 30 / equityAssets.length;
-            const fiEach = 70 / fiAssets.length;
+            const equityPct = 30;
+            const fiPct = 70;
+            const equityEach = equityPct / equityAssets.length;
+            const fiEach = fiPct / fiAssets.length;
             
             assetNames.forEach(name => {
                 let val = 0;
@@ -167,6 +177,9 @@
                 } else if (fiAssets.includes(name)) {
                     pct = fiEach;
                     val = roundToTwo((fiEach / 100) * capital);
+                } else if (name === 'Cash') {
+                    pct = 0;
+                    val = 0;
                 }
                 inputValues[name] = { dollar: val, percent: pct };
             });
@@ -179,6 +192,7 @@
         refreshUI();
     }
 
+    // ----- Render Assets with Dual Input -----
     function renderAssets() {
         const assetNames = getAssetNames();
         let html = '';
@@ -248,7 +262,7 @@
             }
             inputs[name][field] = inp;
             
-            inp.addEventListener('input', function() {
+            inp.addEventListener('input', function(e) {
                 const assetName = this.dataset.asset;
                 const fieldName = this.dataset.field;
                 let val = parseFloat(this.value);
@@ -256,11 +270,6 @@
                 
                 if (fieldName === 'dollar') {
                     val = roundToTwo(val);
-                    if (val > capital + 1.00) {
-                        this.classList.add('error');
-                    } else {
-                        this.classList.remove('error');
-                    }
                     inputValues[assetName].dollar = val;
                     if (currentMode === 'both') {
                         const pct = capital > 0 ? (val / capital) * 100 : 0;
@@ -271,11 +280,6 @@
                         }
                     }
                 } else if (fieldName === 'percent') {
-                    if (val > 101.5) {
-                        this.classList.add('error');
-                    } else {
-                        this.classList.remove('error');
-                    }
                     inputValues[assetName].percent = val;
                     if (currentMode === 'both') {
                         const dollarAmt = roundToTwo((val / 100) * capital);
@@ -305,6 +309,7 @@
         refreshUI();
     }
 
+    // ----- Refresh UI -----
     function refreshUI() {
         capitalDisplay.textContent = fmt(capital);
         
@@ -323,9 +328,9 @@
         
         const remaining = roundToTwo(Math.max(0, capital - sumDollar));
         remainingDisplay.textContent = fmt(remaining);
-        if (remainingDisplaySmall) remainingDisplaySmall.textContent = fmt(remaining);
         allocatedSumDisplay.textContent = fmt(sumDollar);
         
+        // Update percentage displays
         document.querySelectorAll('.asset-item').forEach((item, index) => {
             const pctDisplay = item.querySelector('.pct-display');
             if (pctDisplay) {
@@ -336,21 +341,13 @@
             }
         });
         
+        // Only show error if significantly over (more than 0.05)
         let errorMsg = '';
-        
-        // Relaxed margin: allowed up to $1.00 over
-        if (sumDollar > capital + 1.00) {
+        if (sumDollar > capital + 0.05) {
             errorMsg = `⚠️ Total allocation ($${fmt(sumDollar)}) exceeds capital ($${fmt(capital)}).`;
         } else if ((currentMode === 'percent' || currentMode === 'both') && sumDollar > 0.01) {
-            if (Math.abs(sumPercent - 100) > 2.0) {
+            if (Math.abs(sumPercent - 100) > 1) {
                 errorMsg = `⚠️ Total percentage (${sumPercent.toFixed(1)}%) doesn't equal 100%.`;
-            }
-        }
-        
-        for (let name of assetNames) {
-            if (inputValues[name]?.dollar > capital + 1.00) {
-                errorMsg = `⚠️ ${name} exceeds available capital ($${fmt(capital)}).`;
-                break;
             }
         }
         
@@ -358,6 +355,7 @@
         submitBtn.disabled = (errorMsg.length > 0 || sumDollar < 0.01);
     }
 
+    // ----- Submit Allocation -----
     function submitAllocation() {
         const assetNames = getAssetNames();
         const returns = getRoundData().returns;
@@ -390,7 +388,7 @@
             
             dollarAmt = roundToTwo(dollarAmt);
             
-            if (dollarAmt > capital + 1.00) {
+            if (dollarAmt > capital + 0.05) {
                 error = true;
             }
             allocated += dollarAmt;
@@ -399,14 +397,13 @@
 
         allocated = roundToTwo(allocated);
 
-        if (error || allocated > capital + 1.00 || allocated < 0.01) {
+        if (error || allocated > capital + 0.05 || allocated < 0.01) {
             globalError.textContent = error ? '⚠️ Allocation exceeds capital.' : '⚠️ Allocate at least some capital.';
             return;
         }
 
-        // Auto-absorb remainders up to $1.00 into cash
         const remaining = roundToTwo(capital - allocated);
-        if (Math.abs(remaining) > 0.001) {
+        if (remaining > 0.01) {
             allocationMap['Cash'] = roundToTwo((allocationMap['Cash'] || 0) + remaining);
             allocated = capital;
         }
@@ -451,14 +448,16 @@
         returnPercentDisplay.textContent = fmt(returnPercent) + '%';
         newCapitalDisplay.textContent = fmt(newCapital);
 
-        // Render detail breakdown table only after revealing returns
-        renderDetailTable(allocationMap, returns, capital);
+        // HIDE THE DETAIL TABLE
+        detailTableWrap.style.display = 'none';
+        
         reflectionText.textContent = 'What surprised you? What would you change next round?';
 
         capital = newCapital;
 
         saveAllData();
 
+        // Clear inputs after submit
         const assetNamesClear = getAssetNames();
         assetNamesClear.forEach(name => {
             inputValues[name] = { dollar: 0, percent: 0 };
@@ -468,53 +467,18 @@
             currentRound++;
             updateRoundHeader();
             renderAssets();
+            // Keep results visible, hide detail table
             resultBlock.style.display = 'block';
+            detailTableWrap.style.display = 'none';
             renderHistory();
             globalError.textContent = '';
         } else {
             submitBtn.disabled = true;
             submitBtn.textContent = '🏁 Game Over';
-            globalError.textContent = '🎉 All 7 rounds completed!';
+            globalError.textContent = '🎉 All 7 rounds completed! Check your final capital above.';
             renderHistory();
         }
         refreshUI();
-    }
-
-    // Market Return (%) column and values are rendered inside the post-submit detail breakdown
-    function renderDetailTable(allocationMap, returnsMap, totalCapital) {
-        const assetNames = getAssetNames();
-        let rows = '';
-        let totalAllocPct = 0, totalAllocDol = 0, totalEndVal = 0;
-        for (let name of assetNames) {
-            const allocDol = allocationMap[name] || 0;
-            const allocPct = totalCapital > 0 ? (allocDol / totalCapital) * 100 : 0;
-            const ret = returnsMap[name] || 0;
-            const endVal = allocDol * (1 + ret / 100);
-            totalAllocPct += allocPct;
-            totalAllocDol += allocDol;
-            totalEndVal += endVal;
-            const retStr = ret >= 0 ? `+${fmt(ret)}` : fmt(ret);
-            rows += `
-                <tr>
-                    <td class="asset-label">${name}</td>
-                    <td>${fmt(allocPct)}%</td>
-                    <td>${fmt(allocDol)}</td>
-                    <td>${retStr}%</td>
-                    <td>${fmt(endVal)}</td>
-                </tr>
-            `;
-        }
-        rows += `
-            <tr class="total-row">
-                <td class="asset-label"><strong>TOTAL</strong></td>
-                <td>${fmt(totalAllocPct)}%</td>
-                <td>${fmt(totalAllocDol)}</td>
-                <td>—</td>
-                <td><strong>${fmt(totalEndVal)}</strong></td>
-            </tr>
-        `;
-        detailBody.innerHTML = rows;
-        detailTableWrap.style.display = 'block';
     }
 
     function saveAllData() {
@@ -528,6 +492,14 @@
         localStorage.setItem('currentCapital', capital.toString());
         localStorage.setItem('allRoundReturns', JSON.stringify(allRoundReturns));
         localStorage.setItem('gameData', JSON.stringify(data));
+        
+        try {
+            fetch('/api/save', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            }).catch(e => console.log('Backend not available, using localStorage only'));
+        } catch(e) {}
     }
 
     function updateRoundHeader() {
@@ -613,7 +585,7 @@
                         returnAmountDisplay.textContent = (last.returnAmount >= 0 ? '+' : '') + fmt(last.returnAmount);
                         returnPercentDisplay.textContent = fmt(last.returnPercent) + '%';
                         newCapitalDisplay.textContent = fmt(last.newCapital);
-                        renderDetailTable(last.allocation, last.returns, capital - last.returnAmount);
+                        detailTableWrap.style.display = 'none';
                     }
                     return;
                 }
@@ -641,6 +613,7 @@
         refreshUI();
     }
 
+    // ----- Event Listeners -----
     modeDollar.addEventListener('click', () => setMode('dollar'));
     modePercent.addEventListener('click', () => setMode('percent'));
     modeBoth.addEventListener('click', () => setMode('both'));
@@ -655,5 +628,6 @@
     resetBtn.addEventListener('click', resetRound);
     resetAllBtn.addEventListener('click', resetAllGame);
 
+    // ----- Start -----
     init();
 })();
