@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Results · Group A · Fear vs Opportunity</title>
+    <title>Results · Market Returns</title>
     <link rel="stylesheet" href="style.css" />
     <style>
         .results-container {
@@ -14,15 +14,15 @@
             background: white;
             border-radius: 1.5rem;
             padding: 1.5rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             border: 1px solid #e2ebf3;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
         
         .round-results h3 {
             color: #0b2a42;
-            margin-bottom: 0.5rem;
-            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -38,74 +38,12 @@
             font-weight: 500;
         }
         
-        .round-results .theme-tag {
-            background: #2563eb;
-            color: white;
-            padding: 0.2rem 1rem;
-            border-radius: 30px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            margin-left: 0.5rem;
+        .round-results .year-badge.revealed {
+            background: #0b6e3f;
         }
         
-        .news-signals {
-            background: #f3f8fe;
-            border-radius: 1rem;
-            padding: 1rem 1.2rem;
-            margin: 0.8rem 0 1rem 0;
-            border-left: 4px solid #2563eb;
-        }
-        
-        .news-signals .signal {
-            font-size: 0.9rem;
-            color: #1a3b55;
-            padding: 0.2rem 0;
-            line-height: 1.5;
-        }
-        
-        .news-signals .signal::before {
-            content: "📰 ";
-        }
-        
-        .news-signals .signal-bad::before {
-            content: "⚠️ ";
-        }
-        
-        .news-signals .signal-good::before {
-            content: "✅ ";
-        }
-        
-        .performance-highlights {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.8rem;
-            margin: 0.8rem 0;
-        }
-        
-        .performance-highlights .best {
-            background: #e6f7e6;
-            padding: 0.5rem 1rem;
-            border-radius: 0.8rem;
-            border-left: 4px solid #0b6e3f;
-        }
-        
-        .performance-highlights .worst {
-            background: #fde8e8;
-            padding: 0.5rem 1rem;
-            border-radius: 0.8rem;
-            border-left: 4px solid #b22234;
-        }
-        
-        .performance-highlights .label {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            color: #6b8a9e;
-            font-weight: 600;
-        }
-        
-        .performance-highlights .value {
-            font-weight: 600;
-            font-size: 0.95rem;
+        .round-results .year-badge.hidden {
+            background: #6b8a9e;
         }
         
         .market-returns-grid {
@@ -128,7 +66,7 @@
         .return-item .asset-name {
             font-weight: 500;
             color: #1a3b55;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
         }
         
         .return-item .return-value {
@@ -191,45 +129,30 @@
         
         .return-summary span { font-weight: 500; }
         
-        .group-header {
-            background: linear-gradient(135deg, #1f3a57, #2a4a6a);
+        .refresh-btn {
+            background: #1f3a57;
+            border: none;
             color: white;
-            padding: 1.5rem 2rem;
-            border-radius: 1.5rem;
-            margin-bottom: 2rem;
+            font-weight: 600;
+            padding: 0.4rem 1.2rem;
+            border-radius: 60px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.1s;
+            margin-bottom: 1rem;
         }
         
-        .group-header h2 {
-            font-size: 1.8rem;
-            margin-bottom: 0.3rem;
+        .refresh-btn:hover {
+            background: #0b2a44;
+            transform: scale(0.97);
         }
         
-        .group-header p {
-            opacity: 0.9;
-            font-size: 1rem;
-        }
-        
-        .group-themes {
+        .results-header {
             display: flex;
-            gap: 1.5rem;
+            justify-content: space-between;
+            align-items: center;
             flex-wrap: wrap;
-            margin-top: 0.8rem;
-        }
-        
-        .group-themes .theme {
-            background: rgba(255,255,255,0.15);
-            padding: 0.3rem 1rem;
-            border-radius: 30px;
-            font-size: 0.85rem;
-        }
-        
-        @media (max-width: 700px) {
-            .performance-highlights {
-                grid-template-columns: 1fr;
-            }
-            .market-returns-grid {
-                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-            }
+            margin-bottom: 1rem;
         }
     </style>
 </head>
@@ -243,14 +166,19 @@
             <a href="instructions.html">📖 Instructions</a>
         </div>
 
-        <h1>📊 Group A · Fear vs Opportunity</h1>
-        <div class="sub">Complete market data with news signals, themes, and performance insights</div>
+        <div class="results-header">
+            <div>
+                <h1>📊 Market Returns by Round</h1>
+                <div class="sub">Historical returns for each asset class across all 7 rounds</div>
+            </div>
+            <button class="refresh-btn" id="refreshBtn">🔄 Refresh Results</button>
+        </div>
 
         <div id="resultsContainer" class="results-container">
             <!-- Rendered by JavaScript -->
         </div>
 
-        <div class="footnote">Historical returns and market context for each hidden year</div>
+        <div class="footnote">Returns are revealed after each round · all data stored in your browser</div>
     </div>
 
     <script>
@@ -378,6 +306,9 @@
                 } catch(e) {}
             }
             
+            // Check if game was reset (no data)
+            const hasData = history && history.length > 0;
+            
             // Build the HTML
             let html = '';
             
@@ -399,7 +330,7 @@
             let lastCapital = 10000;
             let completedRounds = 0;
             
-            if (history && history.length > 0) {
+            if (hasData) {
                 completedRounds = history.length;
                 lastCapital = history[history.length - 1]?.newCapital || 10000;
                 totalReturn = lastCapital - 10000;
@@ -432,21 +363,23 @@
                 </div>
             `;
             
-            // Show each round with full data
+            // Show each round
             GROUP_A_DATA.forEach((round, index) => {
                 const roundNum = index + 1;
                 const returns = round.returns || {};
-                const isCompleted = history && history.length > index;
+                const isCompleted = hasData && history && history.length > index;
                 const playerData = isCompleted ? history[index] : null;
+                const isRevealed = isCompleted;
                 
                 html += `
                     <div class="round-results">
                         <h3>
                             <span>
-                                Round ${roundNum}
-                                <span class="theme-tag">${round.theme}</span>
+                                Round ${roundNum} ${round.theme ? '· ' + round.theme : ''}
                             </span>
-                            <span class="year-badge">${round.year} · ${isCompleted ? '✅ Revealed' : '🔒 Hidden'}</span>
+                            <span class="year-badge ${isRevealed ? 'revealed' : 'hidden'}">
+                                ${round.year} · ${isRevealed ? '✅ Revealed' : '🔒 Hidden'}
+                            </span>
                         </h3>
                         
                         <div class="news-signals">
@@ -486,7 +419,6 @@
                         <div class="market-returns-grid">
                     `;
                 
-                // Sort assets for display
                 const sortedAssets = Object.keys(returns).sort();
                 sortedAssets.forEach(asset => {
                     const ret = returns[asset];
@@ -512,13 +444,33 @@
         // Load data when page loads
         document.addEventListener('DOMContentLoaded', loadResults);
         
-        // Listen for storage changes
+        // Listen for storage changes from other tabs/pages
         window.addEventListener('storage', function(e) {
-            if (e.key === 'gameData' || e.key === 'gameHistory') {
+            if (e.key === 'gameData' || e.key === 'gameHistory' || e.key === 'allRoundReturns' || e.key === 'gameReset') {
                 console.log('🔄 Data updated, refreshing results...');
                 loadResults();
             }
         });
+        
+        // Manual refresh button
+        document.getElementById('refreshBtn').addEventListener('click', function() {
+            loadResults();
+            this.textContent = '✅ Refreshed!';
+            setTimeout(() => {
+                this.textContent = '🔄 Refresh Results';
+            }, 2000);
+        });
+        
+        // Also check for reset every 2 seconds (polling fallback)
+        let lastResetTime = localStorage.getItem('gameReset') || '0';
+        setInterval(() => {
+            const currentReset = localStorage.getItem('gameReset') || '0';
+            if (currentReset !== lastResetTime) {
+                lastResetTime = currentReset;
+                console.log('🔄 Reset detected, refreshing results...');
+                loadResults();
+            }
+        }, 2000);
     </script>
 </body>
 </html>
