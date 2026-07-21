@@ -48,7 +48,7 @@
                 <button class="mode-btn" id="modeBoth">🔄 Both</button>
             </div>
 
-            <!-- Asset Grid - THIS IS WHERE THE INPUTS GO -->
+            <!-- Asset Grid -->
             <div id="assetGrid" class="asset-grid"></div>
             <div id="globalError" class="error-msg"></div>
 
@@ -72,6 +72,7 @@
                 </div>
             </div>
 
+            <!-- Result Block - Only shows summary -->
             <div id="resultBlock" class="result-block" style="display:none;">
                 <div class="row">
                     <div><span class="label">💰 Return amount</span> <span class="value" id="returnAmountDisplay">+0.00</span></div>
@@ -80,23 +81,7 @@
                 </div>
             </div>
 
-            <div id="detailTableWrap" class="detail-table-wrap" style="display:none;">
-                <table class="detail-table" id="detailTable">
-                    <thead>
-                        <tr>
-                            <th>Asset Class</th>
-                            <th>Allocation (%)</th>
-                            <th>Allocation ($)</th>
-                            <th>Market Return (%)</th>
-                            <th>End Value ($)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="detailBody"></tbody>
-                </table>
-                <div class="reflection-area" id="reflectionArea">
-                    <strong>💭 Reflection:</strong> <span id="reflectionText">What surprised you? What would you change next round?</span>
-                </div>
-            </div>
+            <!-- DETAIL TABLE AND REFLECTION AREA REMOVED -->
         </div>
 
         <div class="history-log" id="historyLog">
