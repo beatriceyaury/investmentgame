@@ -32,9 +32,6 @@
     const returnPercentDisplay = document.getElementById('returnPercentDisplay');
     const newCapitalDisplay = document.getElementById('newCapitalDisplay');
     const historyEntries = document.getElementById('historyEntries');
-    const detailTableWrap = document.getElementById('detailTableWrap');
-    const detailBody = document.getElementById('detailBody');
-    const reflectionText = document.getElementById('reflectionText');
 
     // Mode buttons
     const modeDollar = document.getElementById('modeDollar');
@@ -96,7 +93,6 @@
         renderHistory();
         
         resultBlock.style.display = 'none';
-        detailTableWrap.style.display = 'none';
         
         submitBtn.disabled = false;
         submitBtn.textContent = '✅ Done — reveal returns';
@@ -448,11 +444,6 @@
         returnPercentDisplay.textContent = fmt(returnPercent) + '%';
         newCapitalDisplay.textContent = fmt(newCapital);
 
-        // HIDE THE DETAIL TABLE
-        detailTableWrap.style.display = 'none';
-        
-        reflectionText.textContent = 'What surprised you? What would you change next round?';
-
         capital = newCapital;
 
         saveAllData();
@@ -467,9 +458,7 @@
             currentRound++;
             updateRoundHeader();
             renderAssets();
-            // Keep results visible, hide detail table
             resultBlock.style.display = 'block';
-            detailTableWrap.style.display = 'none';
             renderHistory();
             globalError.textContent = '';
         } else {
@@ -537,7 +526,6 @@
         });
         renderAssets();
         resultBlock.style.display = 'none';
-        detailTableWrap.style.display = 'none';
         globalError.textContent = '';
         submitBtn.disabled = false;
         yearTag.textContent = `??? · Hidden year`;
@@ -585,7 +573,6 @@
                         returnAmountDisplay.textContent = (last.returnAmount >= 0 ? '+' : '') + fmt(last.returnAmount);
                         returnPercentDisplay.textContent = fmt(last.returnPercent) + '%';
                         newCapitalDisplay.textContent = fmt(last.newCapital);
-                        detailTableWrap.style.display = 'none';
                     }
                     return;
                 }
@@ -606,7 +593,6 @@
         renderAssets();
         renderHistory();
         resultBlock.style.display = 'none';
-        detailTableWrap.style.display = 'none';
         submitBtn.disabled = false;
         submitBtn.textContent = '✅ Done — reveal returns';
         globalError.textContent = '';
