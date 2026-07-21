@@ -5,220 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Set A · Fear vs Opportunity · 7-Round Game</title>
     <link rel="stylesheet" href="style.css" />
-    <style>
-        /* Additional styles for reset button */
-        .btn-reset-all {
-            background: #b22234;
-            border: none;
-            color: white;
-            font-weight: 600;
-            padding: 0.65rem 2rem;
-            border-radius: 60px;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: 0.1s;
-            box-shadow: 0 4px 10px rgba(178, 34, 52, 0.2);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        .btn-reset-all:hover:not(:disabled) { 
-            background: #8b1a1a; 
-            transform: scale(0.97); 
-        }
-        .btn-reset-all:disabled { 
-            opacity: 0.5; 
-            cursor: not-allowed; 
-            transform: none; 
-        }
-        
-        .asset-item {
-            background: white;
-            border-radius: 1.2rem;
-            padding: 0.7rem 1rem 0.7rem 1.2rem;
-            border: 1px solid #e3edf6;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 0.3rem 0.5rem;
-        }
-        
-        .asset-item .label {
-            font-weight: 500;
-            color: #1a3b55;
-            font-size: 0.85rem;
-            min-width: 70px;
-        }
-        
-        .asset-item .input-group {
-            display: flex;
-            align-items: center;
-            gap: 0.2rem;
-            flex: 1;
-            min-width: 160px;
-        }
-        
-        .asset-item .input-group input {
-            width: 70px;
-            padding: 0.3rem 0.3rem 0.3rem 0.6rem;
-            border: 1px solid #ccdbe9;
-            border-radius: 40px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            background: #f6faff;
-            text-align: right;
-            outline: none;
-            transition: 0.15s;
-        }
-        
-        .asset-item .input-group input:focus {
-            border-color: #2563eb;
-            background: white;
-            box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
-        }
-        
-        .asset-item .input-group input.error {
-            border-color: #b91c1c;
-            background: #fee9e9;
-        }
-        
-        .asset-item .input-group .input-label {
-            font-size: 0.7rem;
-            color: #6b8a9e;
-            font-weight: 500;
-            min-width: 12px;
-        }
-        
-        .asset-item .input-group .divider {
-            color: #dce6f0;
-            font-weight: 300;
-        }
-        
-        .asset-item .input-group .or-text {
-            font-size: 0.65rem;
-            color: #6b8a9e;
-            font-style: italic;
-        }
-        
-        .asset-item .hidden-badge {
-            font-size: 0.7rem;
-            color: #6b8a9e;
-            font-style: italic;
-            background: #eef4fa;
-            padding: 0.1rem 0.6rem;
-            border-radius: 30px;
-        }
-        
-        .quick-actions {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-            margin: 0.5rem 0 0.8rem 0;
-        }
-        
-        .quick-actions .quick-btn {
-            background: #eef4fa;
-            border: 1px solid #dce6f0;
-            padding: 0.3rem 0.8rem;
-            border-radius: 30px;
-            font-size: 0.7rem;
-            font-weight: 500;
-            color: #1a3b55;
-            cursor: pointer;
-            transition: 0.15s;
-        }
-        
-        .quick-actions .quick-btn:hover {
-            background: #dce8f5;
-            transform: scale(0.97);
-        }
-        
-        .quick-actions .quick-btn.danger {
-            color: #b22234;
-            border-color: #fde8e8;
-        }
-        
-        .quick-actions .quick-btn.danger:hover {
-            background: #fde8e8;
-        }
-        
-        .mode-toggle {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            margin: 0.8rem 0 0.3rem 0;
-            padding: 0.5rem 1rem;
-            background: white;
-            border-radius: 60px;
-            border: 1px solid #dce6f0;
-        }
-        
-        .mode-toggle .mode-label {
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: #1a3b55;
-        }
-        
-        .mode-toggle .mode-btn {
-            padding: 0.2rem 1rem;
-            border-radius: 30px;
-            border: 1px solid #ccdbe9;
-            background: #f6faff;
-            cursor: pointer;
-            font-size: 0.75rem;
-            font-weight: 500;
-            color: #1a3b55;
-            transition: 0.15s;
-        }
-        
-        .mode-toggle .mode-btn.active {
-            background: #1f3a57;
-            color: white;
-            border-color: #1f3a57;
-        }
-        
-        .mode-toggle .mode-btn:hover:not(.active) {
-            background: #e8eef6;
-        }
-        
-        .asset-item .input-group .percent-symbol {
-            font-size: 0.8rem;
-            color: #2563eb;
-            font-weight: 600;
-        }
-        
-        .asset-item .input-group .dollar-symbol {
-            font-size: 0.8rem;
-            color: #0b6e3f;
-            font-weight: 600;
-        }
-        
-        .reset-all-container {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        
-        @media (max-width: 700px) {
-            .asset-item {
-                flex-direction: column;
-                align-items: stretch;
-                padding: 0.8rem;
-            }
-            .asset-item .input-group {
-                min-width: unset;
-                flex-wrap: wrap;
-            }
-            .asset-item .input-group input {
-                width: 60px;
-                flex: 1;
-                min-width: 50px;
-            }
-            .mode-toggle {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-        }
-    </style>
 </head>
 <body>
     <div class="app">
@@ -257,11 +43,12 @@
             <!-- Mode Toggle -->
             <div class="mode-toggle">
                 <span class="mode-label">📊 Input mode:</span>
-                <button class="mode-btn active" id="modeDollar" data-mode="dollar">💰 Dollar Amount</button>
-                <button class="mode-btn" id="modePercent" data-mode="percent">📈 Percentage (%)</button>
-                <button class="mode-btn" id="modeBoth" data-mode="both">🔄 Both</button>
+                <button class="mode-btn active" id="modeDollar">💰 Dollar Amount</button>
+                <button class="mode-btn" id="modePercent">📈 Percentage (%)</button>
+                <button class="mode-btn" id="modeBoth">🔄 Both</button>
             </div>
 
+            <!-- Asset Grid - THIS IS WHERE THE INPUTS GO -->
             <div id="assetGrid" class="asset-grid"></div>
             <div id="globalError" class="error-msg"></div>
 
@@ -276,14 +63,12 @@
             <div class="round-actions">
                 <div>
                     <button class="btn" id="submitRoundBtn">✅ Done — reveal returns</button>
-                    <button class="btn btn-outline" id="resetRoundBtn" style="margin-left:0.8rem;">↺ Reset inputs</button>
+                    <button class="btn btn-outline" id="resetRoundBtn">↺ Reset inputs</button>
                 </div>
-                <div class="reset-all-container">
-                    <button class="btn-reset-all" id="resetAllBtn">🔄 Reset Entire Game</button>
-                    <div>
-                        <span style="font-weight:500; color:#1f405c;">Allocated: </span>
-                        <span id="allocatedSumDisplay" style="font-weight:700;">0.00</span>
-                    </div>
+                <div>
+                    <span style="font-weight:500; color:#1f405c;">Allocated: </span>
+                    <span id="allocatedSumDisplay" style="font-weight:700;">0.00</span>
+                    <button class="btn-reset-all" id="resetAllBtn" style="margin-left:1rem;">🔄 Reset Entire Game</button>
                 </div>
             </div>
 
