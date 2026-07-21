@@ -364,8 +364,8 @@
         
         let errorMsg = '';
         
-        // Check if sumDollar exceeds capital (with tolerance for rounding)
-        if (sumDollar > capital + 0.01) {
+        // Check if sumDollar exceeds capital (with tolerance for rounding - 0.02 margin)
+        if (sumDollar > capital + 0.02) {
             errorMsg = `⚠️ Total allocation ($${fmt(sumDollar)}) exceeds capital ($${fmt(capital)}).`;
         } else if ((currentMode === 'percent' || currentMode === 'both') && sumDollar > 0.01) {
             // Check if total percentage is close to 100 (within 0.5%)
@@ -376,7 +376,7 @@
         
         // Check individual overages
         for (let name of assetNames) {
-            if (inputValues[name]?.dollar > capital + 0.01) {
+            if (inputValues[name]?.dollar > capital + 0.02) {
                 errorMsg = `⚠️ ${name} exceeds available capital ($${fmt(capital)}).`;
                 break;
             }
@@ -420,7 +420,7 @@
             
             dollarAmt = roundToTwo(dollarAmt);
             
-            if (dollarAmt > capital + 0.01) {
+            if (dollarAmt > capital + 0.02) {
                 error = true;
             }
             allocated += dollarAmt;
@@ -429,7 +429,7 @@
 
         allocated = roundToTwo(allocated);
 
-        if (error || allocated > capital + 0.01 || allocated < 0.01) {
+        if (error || allocated > capital + 0.02 || allocated < 0.01) {
             globalError.textContent = error ? '⚠️ Allocation exceeds capital.' : '⚠️ Allocate at least some capital.';
             return;
         }
@@ -488,12 +488,18 @@
 
         saveAllData();
 
+        // CLEAR ALL INPUTS AFTER SUBMIT
+        const assetNamesClear = getAssetNames();
+        assetNamesClear.forEach(name => {
+            inputValues[name] = { dollar: 0, percent: 0 };
+        });
+
         if (currentRound < ROUNDS_DATA.length - 1) {
             currentRound++;
             updateRoundHeader();
             renderAssets();
-            resultBlock.style.display = 'none';
-            detailTableWrap.style.display = 'none';
+            resultBlock.style.display = 'block'; // Keep results visible
+            // detailTableWrap stays visible
             renderHistory();
             globalError.textContent = '';
         } else {
