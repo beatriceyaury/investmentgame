@@ -21,7 +21,6 @@
     const yearTag = document.getElementById('yearTag');
     const capitalDisplay = document.getElementById('capitalDisplay');
     const remainingDisplay = document.getElementById('remainingDisplay');
-    const remainingDisplaySmall = document.getElementById('remainingDisplaySmall');
     const assetGrid = document.getElementById('assetGrid');
     const globalError = document.getElementById('globalError');
     const allocatedSumDisplay = document.getElementById('allocatedSumDisplay');
@@ -197,6 +196,7 @@
         const assetNames = getAssetNames();
         let html = '';
         
+        // Initialize inputValues if needed
         if (Object.keys(inputValues).length === 0) {
             assetNames.forEach(name => {
                 inputValues[name] = { dollar: 0, percent: 0 };
@@ -224,7 +224,7 @@
                         <span class="percent-symbol">%</span>
                     </div>
                 `;
-            } else {
+            } else { // both mode
                 inputFields = `
                     <div class="input-group">
                         <span class="dollar-symbol">$</span>
@@ -245,8 +245,10 @@
             `;
         }
         
+        // Set the HTML
         assetGrid.innerHTML = html;
         
+        // Re-attach event listeners
         inputs = {};
         document.querySelectorAll('.asset-item input').forEach(inp => {
             const name = inp.dataset.asset;
@@ -344,7 +346,6 @@
         
         const remaining = Math.max(0, capital - sumDollar);
         remainingDisplay.textContent = fmt(remaining);
-        if (remainingDisplaySmall) remainingDisplaySmall.textContent = fmt(remaining);
         allocatedSumDisplay.textContent = fmt(sumDollar);
         
         let errorMsg = '';
