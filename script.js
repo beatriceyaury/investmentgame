@@ -244,7 +244,6 @@
                 `;
             }
             
-            // Calculate what percentage this dollar amount represents
             const displayPct = capital > 0 ? (dollarVal / capital) * 100 : 0;
             
             html += `
@@ -279,7 +278,8 @@
                 
                 if (fieldName === 'dollar') {
                     val = roundToTwo(val);
-                    if (val > capital) {
+                    // Relaxed single-field threshold (allow up to +$0.50 above capital while typing)
+                    if (val > capital + 0.50) {
                         this.classList.add('error');
                     } else {
                         this.classList.remove('error');
@@ -294,7 +294,8 @@
                         }
                     }
                 } else if (fieldName === 'percent') {
-                    if (val > 100) {
+                    // Relaxed single-field threshold (allow up to 101% while typing)
+                    if (val > 100.5) {
                         this.classList.add('error');
                     } else {
                         this.classList.remove('error');
@@ -343,7 +344,6 @@
             sumPercent += percentVal;
         }
         
-        // Round sumDollar to 2 decimals
         sumDollar = roundToTwo(sumDollar);
         
         const remaining = roundToTwo(Math.max(0, capital - sumDollar));
@@ -364,26 +364,26 @@
         
         let errorMsg = '';
         
-        // Check if sumDollar exceeds capital (with tolerance for rounding - 0.02 margin)
-        if (sumDollar > capital + 0.02) {
+        // Dynamic, relaxed tolerance for floating point variations:
+        // Dollar allowance: up to +$0.50 margin
+        // Percentage allowance: up to 1.5% margin
+        if (sumDollar > capital + 0.50) {
             errorMsg = `⚠️ Total allocation ($${fmt(sumDollar)}) exceeds capital ($${fmt(capital)}).`;
         } else if ((currentMode === 'percent' || currentMode === 'both') && sumDollar > 0.01) {
-            // Check if total percentage is close to 100 (within 0.5%)
-            if (Math.abs(sumPercent - 100) > 0.5) {
+            if (Math.abs(sumPercent - 100) > 1.5) {
                 errorMsg = `⚠️ Total percentage (${sumPercent.toFixed(1)}%) doesn't equal 100%.`;
             }
         }
         
-        // Check individual overages
+        // Individual overage checks with relaxed margin
         for (let name of assetNames) {
-            if (inputValues[name]?.dollar > capital + 0.02) {
+            if (inputValues[name]?.dollar > capital + 0.50) {
                 errorMsg = `⚠️ ${name} exceeds available capital ($${fmt(capital)}).`;
                 break;
             }
         }
         
         globalError.textContent = errorMsg;
-        // Only disable if there's an actual error or zero allocation
         submitBtn.disabled = (errorMsg.length > 0 || sumDollar < 0.01);
     }
 
@@ -420,7 +420,7 @@
             
             dollarAmt = roundToTwo(dollarAmt);
             
-            if (dollarAmt > capital + 0.02) {
+            if (dollarAmt > capital + 0.50) {
                 error = true;
             }
             allocated += dollarAmt;
@@ -429,14 +429,14 @@
 
         allocated = roundToTwo(allocated);
 
-        if (error || allocated > capital + 0.02 || allocated < 0.01) {
+        if (error || allocated > capital + 0.50 || allocated < 0.01) {
             globalError.textContent = error ? '⚠️ Allocation exceeds capital.' : '⚠️ Allocate at least some capital.';
             return;
         }
 
-        // If there's remaining capital (due to rounding), add it to Cash
+        // Sweeps any micro-leftovers into Cash automatically
         const remaining = roundToTwo(capital - allocated);
-        if (remaining > 0.01) {
+        if (Math.abs(remaining) > 0.001) {
             allocationMap['Cash'] = roundToTwo((allocationMap['Cash'] || 0) + remaining);
             allocated = capital;
         }
@@ -498,8 +498,7 @@
             currentRound++;
             updateRoundHeader();
             renderAssets();
-            resultBlock.style.display = 'block'; // Keep results visible
-            // detailTableWrap stays visible
+            resultBlock.style.display = 'block';
             renderHistory();
             globalError.textContent = '';
         } else {
