@@ -9,6 +9,7 @@ body {
     padding: 1.5rem;
     display: flex;
     justify-content: center;
+    min-height: 100vh;
 }
 
 .app {
@@ -199,7 +200,7 @@ h1 {
 /* ===== ASSET GRID ===== */
 .asset-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 0.8rem 1rem;
     margin: 1.5rem 0 1rem;
 }
@@ -207,7 +208,7 @@ h1 {
 .asset-item {
     background: white;
     border-radius: 1.2rem;
-    padding: 0.7rem 1rem 0.7rem 1.2rem;
+    padding: 0.6rem 1rem 0.6rem 1.2rem;
     border: 1px solid #e3edf6;
     display: flex;
     flex-wrap: wrap;
@@ -218,17 +219,18 @@ h1 {
 .asset-item .label {
     font-weight: 500;
     color: #1a3b55;
-    font-size: 0.85rem;
-    min-width: 70px;
+    font-size: 0.82rem;
+    min-width: 65px;
 }
 
 .asset-item .hidden-badge {
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     color: #6b8a9e;
     font-style: italic;
     background: #eef4fa;
-    padding: 0.1rem 0.6rem;
+    padding: 0.05rem 0.6rem;
     border-radius: 30px;
+    white-space: nowrap;
 }
 
 .asset-item .input-group {
@@ -236,15 +238,15 @@ h1 {
     align-items: center;
     gap: 0.2rem;
     flex: 1;
-    min-width: 160px;
+    min-width: 150px;
 }
 
 .asset-item .input-group input {
-    width: 65px;
-    padding: 0.3rem 0.3rem 0.3rem 0.6rem;
+    width: 60px;
+    padding: 0.25rem 0.2rem 0.25rem 0.5rem;
     border: 1px solid #ccdbe9;
     border-radius: 40px;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: 500;
     background: #f6faff;
     text-align: right;
@@ -264,20 +266,20 @@ h1 {
 }
 
 .asset-item .input-group .or-text {
-    font-size: 0.6rem;
+    font-size: 0.55rem;
     color: #6b8a9e;
     font-style: italic;
     padding: 0 2px;
 }
 
 .asset-item .input-group .dollar-symbol {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     color: #0b6e3f;
     font-weight: 600;
 }
 
 .asset-item .input-group .percent-symbol {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     color: #2563eb;
     font-weight: 600;
 }
@@ -293,7 +295,7 @@ h1 {
 .quick-actions .quick-btn {
     background: #eef4fa;
     border: 1px solid #dce6f0;
-    padding: 0.3rem 0.8rem;
+    padding: 0.25rem 0.8rem;
     border-radius: 30px;
     font-size: 0.7rem;
     font-weight: 500;
@@ -333,7 +335,7 @@ h1 {
     border: none;
     color: white;
     font-weight: 600;
-    padding: 0.65rem 2rem;
+    padding: 0.6rem 2rem;
     border-radius: 60px;
     font-size: 0.95rem;
     cursor: pointer;
@@ -611,6 +613,33 @@ h1 {
 .performance-highlights .value {
     font-weight: 600;
     font-size: 0.95rem;
+}
+
+/* ===== REFRESH BUTTON (Results page) ===== */
+.refresh-btn {
+    background: #1f3a57;
+    border: none;
+    color: white;
+    font-weight: 600;
+    padding: 0.4rem 1.2rem;
+    border-radius: 60px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: 0.1s;
+    margin-bottom: 1rem;
+}
+
+.refresh-btn:hover {
+    background: #0b2a44;
+    transform: scale(0.97);
+}
+
+.results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
 }
 
 /* ===== RESPONSIVE ===== */
