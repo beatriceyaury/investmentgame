@@ -80,6 +80,7 @@
     let history = [];
     let allRoundReturns = [];
     let currentMode = 'dollar';
+    let isProcessing = false;
 
     // DOM refs
     const roundLabel = document.getElementById('roundLabel');
@@ -139,6 +140,7 @@
     }
 
     function performReset() {
+        isProcessing = false;
         currentRound = 0;
         capital = 10000.0;
         history = [];
@@ -266,7 +268,6 @@
         const assetNames = getAssetNames();
         let html = '';
         
-        // Initialize inputValues if needed
         if (Object.keys(inputValues).length === 0) {
             assetNames.forEach(name => {
                 inputValues[name] = { dollar: 0, percent: 0 };
@@ -398,7 +399,6 @@
         remainingDisplay.textContent = fmt(remaining);
         allocatedSumDisplay.textContent = fmt(sumDollar);
         
-        // Update percentage displays
         document.querySelectorAll('.asset-item').forEach((item, index) => {
             const pctDisplay = item.querySelector('.pct-display');
             if (pctDisplay) {
@@ -424,6 +424,9 @@
 
     // ----- Submit Allocation -----
     function submitAllocation() {
+        if (isProcessing) return;
+        isProcessing = true;
+        
         const assetNames = getAssetNames();
         const returns = getRoundData().returns;
         let allocated = 0;
@@ -466,6 +469,7 @@
 
         if (error || allocated > capital + TOLERANCE || allocated < 0.01) {
             globalError.textContent = error ? '⚠️ Allocation exceeds capital.' : '⚠️ Allocate at least some capital.';
+            isProcessing = false;
             return;
         }
 
@@ -488,28 +492,32 @@
         const data = getRoundData();
         yearTag.textContent = `${data.year} · ${data.label}`;
 
-        const roundReturnData = {
-            year: data.year,
-            label: data.label,
-            returns: { ...returns },
-            allocations: { ...allocationMap },
-            totalReturn: totalReturn,
-            returnPercent: returnPercent,
-            newCapital: newCapital
-        };
-        allRoundReturns.push(roundReturnData);
+        // Check for duplicate round
+        const existingRound = history.find(h => h.round === currentRound + 1);
+        if (!existingRound) {
+            const roundReturnData = {
+                year: data.year,
+                label: data.label,
+                returns: { ...returns },
+                allocations: { ...allocationMap },
+                totalReturn: totalReturn,
+                returnPercent: returnPercent,
+                newCapital: newCapital
+            };
+            allRoundReturns.push(roundReturnData);
 
-        history.push({
-            round: currentRound + 1,
-            year: data.year,
-            label: data.label,
-            allocation: { ...allocationMap },
-            startCapital: capital,
-            returnAmount: totalReturn,
-            returnPercent: returnPercent,
-            newCapital: newCapital,
-            returns: { ...returns }
-        });
+            history.push({
+                round: currentRound + 1,
+                year: data.year,
+                label: data.label,
+                allocation: { ...allocationMap },
+                startCapital: capital,
+                returnAmount: totalReturn,
+                returnPercent: returnPercent,
+                newCapital: newCapital,
+                returns: { ...returns }
+            });
+        }
 
         resultBlock.style.display = 'block';
         returnAmountDisplay.textContent = (totalReturn >= 0 ? '+' : '') + fmt(totalReturn);
@@ -540,6 +548,7 @@
             renderHistory();
         }
         refreshUI();
+        isProcessing = false;
     }
 
     function saveAllData() {
@@ -611,7 +620,8 @@
     }
 
     function init() {
-        // Check if DOM elements exist
+        isProcessing = false;
+        
         if (!assetGrid) {
             console.error('Asset grid not found!');
             return;
@@ -622,9 +632,29 @@
             try {
                 const data = JSON.parse(savedData);
                 if (data.history && data.history.length > 0) {
-                    history = data.history;
+                    // Remove duplicates from history
+                    let uniqueHistory = [];
+                    let seenRounds = new Set();
+                    for (let h of data.history) {
+                        if (!seenRounds.has(h.round)) {
+                            seenRounds.add(h.round);
+                            uniqueHistory.push(h);
+                        }
+                    }
+                    history = uniqueHistory;
                     capital = data.currentCapital || 10000.0;
                     allRoundReturns = data.allRoundReturns || [];
+                    
+                    // Remove duplicates from allRoundReturns
+                    let uniqueReturns = [];
+                    let seenYears = new Set();
+                    for (let r of allRoundReturns) {
+                        if (!seenYears.has(r.year)) {
+                            seenYears.add(r.year);
+                            uniqueReturns.push(r);
+                        }
+                    }
+                    allRoundReturns = uniqueReturns;
                     
                     if (history.length < ROUNDS_DATA.length) {
                         currentRound = history.length;
