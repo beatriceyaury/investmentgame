@@ -318,19 +318,84 @@
     </div>
 
     <script>
-        // Complete Group A Data for reference
+        // Complete Group A Data - 6 Rounds, 6 Assets
         const GROUP_A_DATA = {
-            "2008": { theme: "Financial crisis", label: "Financial crisis", newsSignals: ["Emergency policy support discussed", "Investors rush toward defensive assets", "Confidence in major institutions weakens"], best: "China Fixed Income", worst: "China Equity", returns: { "USA Eq": -37.0, "Europe Eq": -45.0, "Japan Eq": -42.1, "China Eq": -51.0, "USA FI": 5.2, "Europe FI": 6.1, "Japan FI": 3.4, "China FI": 9.0, "Cash": 1.4 } },
-            "2017": { theme: "Growth optimism", label: "Growth optimism", newsSignals: ["Global economic data improves", "Equity valuations continue climbing", "Some investors warn of complacency"], best: "China Equity", worst: "China Fixed Income", returns: { "USA Eq": 21.8, "Europe Eq": 25.0, "Japan Eq": 19.1, "China Eq": 54.0, "USA FI": 3.5, "Europe FI": 0.6, "Japan FI": 0.2, "China FI": -1.2, "Cash": 0.8 } },
-            "2020": { theme: "Pandemic shock", label: "Pandemic shock", newsSignals: ["A global health crisis disrupts production and travel", "Governments prepare extraordinary support", "Markets struggle to assess long-term impact"], best: "China Equity", worst: "Cash", returns: { "USA Eq": 18.4, "Europe Eq": 5.0, "Japan Eq": 16.0, "China Eq": 30.0, "USA FI": 7.5, "Europe FI": 4.1, "Japan FI": 0.7, "China FI": 3.5, "Cash": 0.5 } },
-            "2012": { theme: "Stabilisation", label: "Stabilisation", newsSignals: ["Central banks hint at additional support", "Investors cautiously re-enter risk assets", "Economic stability remains debated"], best: "Japan Equity", worst: "Cash", returns: { "USA Eq": 16.0, "Europe Eq": 19.0, "Japan Eq": 22.9, "China Eq": 19.0, "USA FI": 4.2, "Europe FI": 10.3, "Japan FI": 1.8, "China FI": 4.0, "Cash": 0.1 } },
-            "2022": { theme: "Inflation and tightening", label: "Inflation & tightening", newsSignals: ["Inflation repeatedly surprises policy makers", "Bond markets reprice interest rate expectations", "Growth assets face valuation pressure"], best: "China Fixed Income", worst: "China Equity", returns: { "USA Eq": -18.1, "Europe Eq": -15.0, "Japan Eq": -9.4, "China Eq": -22.0, "USA FI": -13.0, "Europe FI": -17.2, "Japan FI": -5.3, "China FI": 3.1, "Cash": 1.5 } },
-            "2009": { theme: "Recovery or trap", label: "Recovery or trap", newsSignals: ["Large-scale support enters markets", "Some investors see excessive pessimism", "Debate grows over recovery durability"], best: "China Equity", worst: "Cash", returns: { "USA Eq": 26.5, "Europe Eq": 32.0, "Japan Eq": 19.0, "China Eq": 62.0, "USA FI": 5.9, "Europe FI": 5.6, "Japan FI": 1.4, "China FI": 1.4, "Cash": 0.1 } },
-            "2024": { theme: "Momentum vs diversification", label: "Momentum vs diversification", newsSignals: ["Innovation optimism expands further", "Markets question whether leadership is too concentrated", "Policy easing expectations rise"], best: "USA Equity", worst: "Japan Fixed Income", returns: { "USA Eq": 25.0, "Europe Eq": 9.0, "Japan Eq": 19.2, "China Eq": 20.0, "USA FI": 1.2, "Europe FI": 1.8, "Japan FI": -2.0, "China FI": 5.5, "Cash": 5.1 } }
+            "2008": { 
+                theme: "Global financial crisis", 
+                label: "Financial crisis", 
+                newsSignals: [
+                    "Emergency policy support is discussed",
+                    "Investors rush toward defensive assets",
+                    "Confidence in major institutions weakens"
+                ], 
+                best: "Gold", 
+                worst: "China EQ", 
+                returns: { "US EQ": -37.0, "Europe EQ": -45.0, "China EQ": -65.4, "Global Bonds": 5.2, "Gold": 5.5, "Cash": 1.4 } 
+            },
+            "2017": { 
+                theme: "Growth optimism", 
+                label: "Growth optimism", 
+                newsSignals: [
+                    "Global economic data improves",
+                    "Equity valuations continue climbing",
+                    "Some investors warn of complacency"
+                ], 
+                best: "China EQ", 
+                worst: "Cash", 
+                returns: { "US EQ": 21.8, "Europe EQ": 25.0, "China EQ": 54.1, "Global Bonds": 7.4, "Gold": 13.7, "Cash": 0.8 } 
+            },
+            "2020": { 
+                theme: "Pandemic shock", 
+                label: "Pandemic shock", 
+                newsSignals: [
+                    "A global health crisis disrupts production and travel",
+                    "Governments prepare extraordinary support",
+                    "Markets struggle to assess long-term impact"
+                ], 
+                best: "China EQ", 
+                worst: "Cash", 
+                returns: { "US EQ": 18.4, "Europe EQ": 5.0, "China EQ": 29.5, "Global Bonds": 9.2, "Gold": 24.6, "Cash": 0.6 } 
+            },
+            "2012": { 
+                theme: "Stabilisation", 
+                label: "Stabilisation", 
+                newsSignals: [
+                    "Central banks hint at additional support",
+                    "Investors cautiously re-enter risk assets",
+                    "Economic stability remains debated"
+                ], 
+                best: "Europe EQ", 
+                worst: "Cash", 
+                returns: { "US EQ": 16.0, "Europe EQ": 19.0, "China EQ": 14.3, "Global Bonds": 4.2, "Gold": 7.1, "Cash": 0.1 } 
+            },
+            "2022": { 
+                theme: "Inflation and tightening", 
+                label: "Inflation & tightening", 
+                newsSignals: [
+                    "Inflation repeatedly surprises policy makers",
+                    "Bond markets reprice interest-rate expectations",
+                    "Growth assets face valuation pressure"
+                ], 
+                best: "Cash", 
+                worst: "China EQ", 
+                returns: { "US EQ": -18.1, "Europe EQ": -15.0, "China EQ": -21.8, "Global Bonds": -16.2, "Gold": 0.4, "Cash": 2.1 } 
+            },
+            "2024": { 
+                theme: "Momentum vs diversification", 
+                label: "Momentum vs diversification", 
+                newsSignals: [
+                    "Innovation optimism expands further",
+                    "Markets question whether leadership is too concentrated",
+                    "Policy easing expectations rise"
+                ], 
+                best: "Gold", 
+                worst: "Global Bonds", 
+                returns: { "US EQ": 24.2, "Europe EQ": 9.0, "China EQ": 16.4, "Global Bonds": 2.8, "Gold": 27.4, "Cash": 5.1 } 
+            }
         };
 
-        // Order of rounds for display
-        const ROUND_ORDER = ["2008", "2017", "2020", "2012", "2022", "2009", "2024"];
+        // Order of rounds
+        const ROUND_ORDER = ["2008", "2017", "2020", "2012", "2022", "2024"];
 
         function loadResults() {
             const container = document.getElementById('resultsContainer');
@@ -392,7 +457,7 @@
                 <div class="summary-stats">
                     <div class="stat-card">
                         <div class="stat-label">📊 Rounds Completed</div>
-                        <div class="stat-value">${totalRounds} / 7</div>
+                        <div class="stat-value">${totalRounds} / 6</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-label">💰 Final Capital</div>
@@ -413,13 +478,12 @@
                 </div>
             `;
 
-            // Show ONLY completed rounds
+            // Show completed rounds
             history.forEach((h, index) => {
                 const roundNum = index + 1;
                 const year = h.year;
                 const data = GROUP_A_DATA[year] || null;
                 const returns = h.returns || {};
-                const playerData = h;
                 
                 html += `
                     <div class="round-results">
@@ -448,15 +512,15 @@
                         ` : ''}
                         
                         <div class="return-summary">
-                            <span>💰 Your Return: ${playerData.returnAmount >= 0 ? '+' : ''}$${playerData.returnAmount?.toFixed(2) || '0.00'}</span>
-                            <span>📈 Your Return %: ${playerData.returnPercent >= 0 ? '+' : ''}${playerData.returnPercent?.toFixed(2) || '0.00'}%</span>
-                            <span>🔁 New Capital: $${playerData.newCapital?.toFixed(2) || 'N/A'}</span>
+                            <span>💰 Your Return: ${h.returnAmount >= 0 ? '+' : ''}$${h.returnAmount?.toFixed(2) || '0.00'}</span>
+                            <span>📈 Your Return %: ${h.returnPercent >= 0 ? '+' : ''}${h.returnPercent?.toFixed(2) || '0.00'}%</span>
+                            <span>🔁 New Capital: $${h.newCapital?.toFixed(2) || 'N/A'}</span>
                         </div>
                         
                         <div class="market-returns-grid">
                     `;
                 
-                // Show all asset returns for this round
+                // Show all asset returns
                 const sortedAssets = Object.keys(returns).sort();
                 sortedAssets.forEach(asset => {
                     const ret = returns[asset];
@@ -476,8 +540,8 @@
                 `;
             });
 
-            // Add message about remaining rounds
-            const remaining = 7 - history.length;
+            // Remaining rounds message
+            const remaining = 6 - history.length;
             if (remaining > 0) {
                 const nextRoundNum = history.length + 1;
                 html += `
