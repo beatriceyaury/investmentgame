@@ -1,5 +1,5 @@
 (function() {
-    // ----- SET A: Fear vs Opportunity - 6 Rounds -----
+    // ----- SET A: Fear vs Opportunity - 6 Rounds, 6 Assets -----
     const ROUNDS_DATA = [
         { 
             year: "2008", 
@@ -183,7 +183,7 @@
         renderAssets();
     }
 
-    // ----- Quick Actions -----
+    // ----- Quick Actions - UPDATED FOR 6 ASSETS -----
     function applyQuickAction(type) {
         const assetNames = getAssetNames();
         
@@ -200,9 +200,8 @@
                 inputValues[name] = { dollar: roundToTwo(val), percent: pct };
             });
         } else if (type === 'equity') {
+            // Growth: 60% Equities, 20% Bonds, 10% Gold, 10% Cash
             const equityAssets = ['US EQ', 'Europe EQ', 'China EQ'];
-            const otherAssets = ['Global Bonds', 'Gold', 'Cash'];
-            
             const equityPct = 60;
             const bondsPct = 20;
             const goldPct = 10;
@@ -229,8 +228,8 @@
                 inputValues[name] = { dollar: val, percent: pct };
             });
         } else if (type === 'defensive') {
+            // Defensive: 20% Equities, 30% Bonds, 20% Gold, 30% Cash
             const equityAssets = ['US EQ', 'Europe EQ', 'China EQ'];
-            
             const equityPct = 20;
             const bondsPct = 30;
             const goldPct = 20;
