@@ -101,7 +101,7 @@
         
         .allocation-row {
             display: grid;
-            grid-template-columns: 140px 1fr 100px 100px;
+            grid-template-columns: 100px 1fr 100px 80px;
             gap: 0.5rem 1rem;
             align-items: center;
             padding: 0.4rem 0.8rem;
@@ -200,24 +200,21 @@
             font-weight: 600;
         }
         
-        .color-usa-eq { background: #2563eb; }
+        .color-us-eq { background: #2563eb; }
         .color-europe-eq { background: #7c3aed; }
-        .color-japan-eq { background: #dc2626; }
-        .color-china-eq { background: #eab308; }
-        .color-usa-fi { background: #0891b2; }
-        .color-europe-fi { background: #059669; }
-        .color-japan-fi { background: #8b5cf6; }
-        .color-china-fi { background: #f59e0b; }
+        .color-china-eq { background: #dc2626; }
+        .color-global-bonds { background: #0891b2; }
+        .color-gold { background: #f59e0b; }
         .color-cash { background: #6b7280; }
         
         @media (max-width: 700px) {
             .allocation-row {
-                grid-template-columns: 100px 1fr 70px 70px;
+                grid-template-columns: 80px 1fr 70px 60px;
                 gap: 0.3rem 0.5rem;
                 font-size: 0.8rem;
                 padding: 0.3rem 0.5rem;
             }
-            .allocation-row .asset-name { font-size: 0.75rem; min-width: 80px; }
+            .allocation-row .asset-name { font-size: 0.75rem; min-width: 60px; }
             .allocation-row .asset-amount { font-size: 0.8rem; }
             .allocation-row .asset-percent { font-size: 0.75rem; }
             .round-portfolio .round-header h3 { font-size: 1rem; }
@@ -247,17 +244,14 @@
     <script>
         function getAssetColor(assetName) {
             const colorMap = {
-                "USA Eq": "color-usa-eq",
-                "Europe Eq": "color-europe-eq",
-                "Japan Eq": "color-japan-eq",
-                "China Eq": "color-china-eq",
-                "USA FI": "color-usa-fi",
-                "Europe FI": "color-europe-fi",
-                "Japan FI": "color-japan-fi",
-                "China FI": "color-china-fi",
+                "US EQ": "color-us-eq",
+                "Europe EQ": "color-europe-eq",
+                "China EQ": "color-china-eq",
+                "Global Bonds": "color-global-bonds",
+                "Gold": "color-gold",
                 "Cash": "color-cash"
             };
-            return colorMap[assetName] || "color-usa-eq";
+            return colorMap[assetName] || "color-us-eq";
         }
 
         function loadPortfolio() {
@@ -305,7 +299,7 @@
                 <div class="portfolio-summary">
                     <div class="summary-card">
                         <div class="card-label">📊 Total Rounds</div>
-                        <div class="card-value">${totalRounds} / 7</div>
+                        <div class="card-value">${totalRounds} / 6</div>
                     </div>
                     <div class="summary-card">
                         <div class="card-label">💰 Final Capital</div>
@@ -335,12 +329,11 @@
                 const returnPct = h.returnPercent || 0;
                 const newCapital = h.newCapital || 10000;
                 const year = h.year || 'Unknown';
-                const label = h.label || '';
 
                 // Get all asset names
                 const assetNames = Object.keys(allocations).sort();
                 
-                // Calculate total allocated (should equal capital)
+                // Calculate total allocated
                 let totalAllocated = 0;
                 assetNames.forEach(name => {
                     totalAllocated += allocations[name] || 0;
@@ -351,7 +344,7 @@
                         <div class="round-header">
                             <h3>Round ${roundNum}</h3>
                             <div>
-                                <span class="year-badge">${year} ${label ? '· ' + label : ''}</span>
+                                <span class="year-badge">${year}</span>
                                 <span class="return-badge ${returnAmt >= 0 ? 'positive' : 'negative'}">
                                     ${returnAmt >= 0 ? '+' : ''}${returnAmt.toFixed(2)} (${returnPct >= 0 ? '+' : ''}${returnPct.toFixed(2)}%)
                                 </span>
@@ -391,36 +384,4 @@
                         <div class="allocation-row total-row">
                             <span class="asset-name">TOTAL</span>
                             <div class="asset-bar" style="background: #dce8f5;">
-                                <div class="fill" style="width: 100%; background: #b6ccdf; color: #0b2a42;">
-                                    100%
-                                </div>
-                            </div>
-                            <span class="asset-amount">$${totalAllocated.toFixed(2)}</span>
-                            <span class="asset-percent">100%</span>
-                        </div>
-                    </div>
-
-                    <div class="round-footer">
-                        <span>💰 Cash allocation: <span class="highlight">$${(allocations['Cash'] || 0).toFixed(2)}</span> (${totalCapital > 0 ? ((allocations['Cash'] || 0) / totalCapital * 100).toFixed(1) : 0}%)</span>
-                        <span>📊 Total allocated: <span class="highlight">$${totalAllocated.toFixed(2)}</span></span>
-                    </div>
-                </div>
-                `;
-            });
-
-            container.innerHTML = html;
-        }
-
-        // Load data when page loads
-        document.addEventListener('DOMContentLoaded', loadPortfolio);
-        
-        // Listen for storage changes
-        window.addEventListener('storage', function(e) {
-            if (e.key === 'gameData' || e.key === 'gameHistory') {
-                console.log('🔄 Data updated, refreshing portfolio...');
-                loadPortfolio();
-            }
-        });
-    </script>
-</body>
-</html>
+                                <div class="fill" style="width: 100
