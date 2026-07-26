@@ -81,6 +81,7 @@
     let allRoundReturns = [];
     let currentMode = 'dollar';
     let isProcessing = false;
+    let gameCompleted = false;  // <-- NEW FLAG
 
     // DOM refs
     const roundLabel = document.getElementById('roundLabel');
@@ -141,6 +142,7 @@
 
     function performReset() {
         isProcessing = false;
+        gameCompleted = false;
         currentRound = 0;
         capital = 10000.0;
         history = [];
@@ -419,11 +421,27 @@
         }
         
         globalError.textContent = errorMsg;
-        submitBtn.disabled = (errorMsg.length > 0 || sumDollar < 0.01);
+        // Disable submit if game is completed OR there's an error
+        submitBtn.disabled = (gameCompleted || errorMsg.length > 0 || sumDollar < 0.01);
     }
 
     // ----- Submit Allocation -----
     function submitAllocation() {
+        // Check if game is already completed
+        if (gameCompleted) {
+            globalError.textContent = '🎉 Game already completed! All 6 rounds finished.';
+            return;
+        }
+        
+        // Check if all rounds are done
+        if (history.length >= ROUNDS_DATA.length) {
+            gameCompleted = true;
+            submitBtn.disabled = true;
+            submitBtn.textContent = '🏁 Game Over';
+            globalError.textContent = '🎉 All 6 rounds completed! Check your final capital above.';
+            return;
+        }
+        
         if (isProcessing) return;
         isProcessing = true;
         
@@ -534,6 +552,19 @@
             inputValues[name] = { dollar: 0, percent: 0 };
         });
 
+        // Check if all rounds are done
+        if (history.length >= ROUNDS_DATA.length) {
+            gameCompleted = true;
+            submitBtn.disabled = true;
+            submitBtn.textContent = '🏁 Game Over';
+            globalError.textContent = '🎉 All 6 rounds completed! Check your final capital above.';
+            renderHistory();
+            refreshUI();
+            isProcessing = false;
+            return;
+        }
+
+        // Move to next round
         if (currentRound < ROUNDS_DATA.length - 1) {
             currentRound++;
             updateRoundHeader();
@@ -541,11 +572,6 @@
             resultBlock.style.display = 'block';
             renderHistory();
             globalError.textContent = '';
-        } else {
-            submitBtn.disabled = true;
-            submitBtn.textContent = '🏁 Game Over';
-            globalError.textContent = '🎉 All 6 rounds completed! Check your final capital above.';
-            renderHistory();
         }
         refreshUI();
         isProcessing = false;
@@ -573,8 +599,14 @@
     }
 
     function updateRoundHeader() {
-        roundLabel.textContent = `Round ${currentRound + 1}`;
-        yearTag.textContent = `??? · Hidden year`;
+        // Only show round number, not "Round 7"
+        if (currentRound < ROUNDS_DATA.length) {
+            roundLabel.textContent = `Round ${currentRound + 1}`;
+            yearTag.textContent = `??? · Hidden year`;
+        } else {
+            roundLabel.textContent = `Game Over`;
+            yearTag.textContent = `🎉 All rounds completed`;
+        }
     }
 
     function renderHistory() {
@@ -583,7 +615,9 @@
             return;
         }
         let html = '';
-        for (let h of history) {
+        // Only show up to 6 rounds
+        const displayHistory = history.slice(0, ROUNDS_DATA.length);
+        for (let h of displayHistory) {
             const allocStr = Object.entries(h.allocation)
                 .filter(([k,v]) => v > 0)
                 .map(([k,v]) => `${k}: ${fmt(v)}`)
@@ -608,6 +642,16 @@
         renderAssets();
         resultBlock.style.display = 'none';
         globalError.textContent = '';
+        
+        // Only reset if game isn't completed or if we want to continue
+        if (gameCompleted) {
+            // If game is completed, reset button should trigger full reset
+            if (confirm('Game is already completed. Would you like to reset and start over?')) {
+                performReset();
+            }
+            return;
+        }
+        
         submitBtn.disabled = false;
         yearTag.textContent = `??? · Hidden year`;
         if (currentRound === ROUNDS_DATA.length - 1 && history.length === ROUNDS_DATA.length) {
@@ -621,6 +665,7 @@
 
     function init() {
         isProcessing = false;
+        gameCompleted = false;
         
         if (!assetGrid) {
             console.error('Asset grid not found!');
@@ -632,7 +677,7 @@
             try {
                 const data = JSON.parse(savedData);
                 if (data.history && data.history.length > 0) {
-                    // Remove duplicates from history
+                    // Remove duplicates from history - KEEP ONLY UNIQUE ROUNDS
                     let uniqueHistory = [];
                     let seenRounds = new Set();
                     for (let h of data.history) {
@@ -643,12 +688,11 @@
                     }
                     history = uniqueHistory;
                     capital = data.currentCapital || 10000.0;
-                    allRoundReturns = data.allRoundReturns || [];
                     
                     // Remove duplicates from allRoundReturns
                     let uniqueReturns = [];
                     let seenYears = new Set();
-                    for (let r of allRoundReturns) {
+                    for (let r of (data.allRoundReturns || [])) {
                         if (!seenYears.has(r.year)) {
                             seenYears.add(r.year);
                             uniqueReturns.push(r);
@@ -656,12 +700,30 @@
                     }
                     allRoundReturns = uniqueReturns;
                     
-                    if (history.length < ROUNDS_DATA.length) {
-                        currentRound = history.length;
-                    } else {
+                    // TRUNCATE: If history has more than 6 rounds, keep only the last 6
+                    if (history.length > ROUNDS_DATA.length) {
+                        history = history.slice(-ROUNDS_DATA.length);
+                        history = history.map((h, i) => ({ ...h, round: i + 1 }));
+                    }
+                    
+                    if (allRoundReturns.length > ROUNDS_DATA.length) {
+                        allRoundReturns = allRoundReturns.slice(-ROUNDS_DATA.length);
+                    }
+                    
+                    // Save the cleaned data back
+                    saveAllData();
+                    
+                    // Check if all rounds are done
+                    if (history.length >= ROUNDS_DATA.length) {
+                        gameCompleted = true;
                         currentRound = ROUNDS_DATA.length - 1;
                         submitBtn.disabled = true;
                         submitBtn.textContent = '🏁 Game Over';
+                        globalError.textContent = '🎉 All 6 rounds completed! Check your final capital above.';
+                    } else {
+                        currentRound = history.length;
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = '✅ Done — reveal returns';
                     }
                     
                     const assetNames = getAssetNames();
@@ -694,6 +756,7 @@
         capital = 10000.0;
         history = [];
         allRoundReturns = [];
+        gameCompleted = false;
         const assetNames = getAssetNames();
         assetNames.forEach(name => {
             inputValues[name] = { dollar: 0, percent: 0 };
