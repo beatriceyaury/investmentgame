@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Set A · Fear vs Opportunity · 7-Round Game</title>
+    <title>Set A · Fear vs Opportunity · 6-Round Game</title>
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -19,12 +19,12 @@
         <h1>📊 Set A · Fear vs Opportunity</h1>
         
         <div class="game-description">
-            <strong>🎯 The Game:</strong> You start with <strong>$10,000</strong> and face <strong>7 hidden years</strong> (2008–2024).<br>
-            For each round, <strong>allocate your capital</strong> across 9 assets. The returns are <strong>hidden</strong> until you submit.<br>
+            <strong>🎯 The Game:</strong> You start with <strong>$10,000</strong> and face <strong>6 hidden years</strong> (2008–2024).<br>
+            For each round, <strong>allocate your capital</strong> across 6 assets. The returns are <strong>hidden</strong> until you submit.<br>
             Click <strong>"Done — reveal returns"</strong> to see your performance. Your new capital is reinvested into the next round.
         </div>
         
-        <div class="sub">Set A · Fear vs Opportunity · 7 rounds · $10,000 start</div>
+        <div class="sub">Set A · Fear vs Opportunity · 6 rounds · $10,000 start</div>
 
         <div id="roundPanel" class="round-panel">
             <div id="roundHeader" class="round-header">
@@ -53,10 +53,10 @@
             <div id="globalError" class="error-msg"></div>
 
             <div class="quick-actions">
-                <button class="quick-btn" id="equalAlloc">⚖️ Equal Split (11.1% each)</button>
+                <button class="quick-btn" id="equalAlloc">⚖️ Equal Split</button>
                 <button class="quick-btn" id="cashOnly">💵 All Cash</button>
-                <button class="quick-btn" id="equityHeavy">📈 Equity Heavy (70% Eq, 30% FI)</button>
-                <button class="quick-btn" id="defensive">🛡️ Defensive (30% Eq, 70% FI)</button>
+                <button class="quick-btn" id="equityHeavy">📈 Growth (60% Eq, 20% Bonds, 10% Gold, 10% Cash)</button>
+                <button class="quick-btn" id="defensive">🛡️ Defensive (20% Eq, 30% Bonds, 20% Gold, 30% Cash)</button>
                 <button class="quick-btn danger" id="clearAll">🗑️ Clear All</button>
             </div>
 
@@ -72,7 +72,7 @@
                 </div>
             </div>
 
-            <!-- Result Block - Only shows summary -->
+            <!-- Result Block -->
             <div id="resultBlock" class="result-block" style="display:none;">
                 <div class="row">
                     <div><span class="label">💰 Return amount</span> <span class="value" id="returnAmountDisplay">+0.00</span></div>
@@ -80,8 +80,6 @@
                     <div><span class="label">🔁 New capital</span> <span class="value" id="newCapitalDisplay">0.00</span></div>
                 </div>
             </div>
-
-            <!-- DETAIL TABLE AND REFLECTION AREA REMOVED -->
         </div>
 
         <div class="history-log" id="historyLog">
