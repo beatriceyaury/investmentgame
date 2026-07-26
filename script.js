@@ -1,13 +1,78 @@
 (function() {
-    // ----- SET A: Fear vs Opportunity -----
+    // ----- SET A: Fear vs Opportunity - 6 Rounds -----
     const ROUNDS_DATA = [
-        { year: "2008", label: "Financial crisis", returns: { "USA Eq": -37.0, "Europe Eq": -45.0, "Japan Eq": -42.1, "China Eq": -51.0, "USA FI": 5.2, "Europe FI": 6.1, "Japan FI": 3.4, "China FI": 9.0, "Cash": 1.4 } },
-        { year: "2017", label: "Growth optimism", returns: { "USA Eq": 21.8, "Europe Eq": 25.0, "Japan Eq": 19.1, "China Eq": 54.0, "USA FI": 3.5, "Europe FI": 0.6, "Japan FI": 0.2, "China FI": -1.2, "Cash": 0.8 } },
-        { year: "2020", label: "Pandemic shock", returns: { "USA Eq": 18.4, "Europe Eq": 5.0, "Japan Eq": 16.0, "China Eq": 30.0, "USA FI": 7.5, "Europe FI": 4.1, "Japan FI": 0.7, "China FI": 3.5, "Cash": 0.5 } },
-        { year: "2012", label: "Stabilisation", returns: { "USA Eq": 16.0, "Europe Eq": 19.0, "Japan Eq": 22.9, "China Eq": 19.0, "USA FI": 4.2, "Europe FI": 10.3, "Japan FI": 1.8, "China FI": 4.0, "Cash": 0.1 } },
-        { year: "2022", label: "Inflation & tightening", returns: { "USA Eq": -18.1, "Europe Eq": -15.0, "Japan Eq": -9.4, "China Eq": -22.0, "USA FI": -13.0, "Europe FI": -17.2, "Japan FI": -5.3, "China FI": 3.1, "Cash": 1.5 } },
-        { year: "2009", label: "Recovery or trap", returns: { "USA Eq": 26.5, "Europe Eq": 32.0, "Japan Eq": 19.0, "China Eq": 62.0, "USA FI": 5.9, "Europe FI": 5.6, "Japan FI": 1.4, "China FI": 1.4, "Cash": 0.1 } },
-        { year: "2024", label: "Momentum vs diversification", returns: { "USA Eq": 25.0, "Europe Eq": 9.0, "Japan Eq": 19.2, "China Eq": 20.0, "USA FI": 1.2, "Europe FI": 1.8, "Japan FI": -2.0, "China FI": 5.5, "Cash": 5.1 } }
+        { 
+            year: "2008", 
+            label: "Global financial crisis", 
+            returns: { 
+                "US EQ": -37.0, 
+                "Europe EQ": -45.0, 
+                "China EQ": -65.4, 
+                "Global Bonds": 5.2, 
+                "Gold": 5.5, 
+                "Cash": 1.4 
+            } 
+        },
+        { 
+            year: "2017", 
+            label: "Growth optimism", 
+            returns: { 
+                "US EQ": 21.8, 
+                "Europe EQ": 25.0, 
+                "China EQ": 54.1, 
+                "Global Bonds": 7.4, 
+                "Gold": 13.7, 
+                "Cash": 0.8 
+            } 
+        },
+        { 
+            year: "2020", 
+            label: "Pandemic shock", 
+            returns: { 
+                "US EQ": 18.4, 
+                "Europe EQ": 5.0, 
+                "China EQ": 29.5, 
+                "Global Bonds": 9.2, 
+                "Gold": 24.6, 
+                "Cash": 0.6 
+            } 
+        },
+        { 
+            year: "2012", 
+            label: "Stabilisation", 
+            returns: { 
+                "US EQ": 16.0, 
+                "Europe EQ": 19.0, 
+                "China EQ": 14.3, 
+                "Global Bonds": 4.2, 
+                "Gold": 7.1, 
+                "Cash": 0.1 
+            } 
+        },
+        { 
+            year: "2022", 
+            label: "Inflation & tightening", 
+            returns: { 
+                "US EQ": -18.1, 
+                "Europe EQ": -15.0, 
+                "China EQ": -21.8, 
+                "Global Bonds": -16.2, 
+                "Gold": 0.4, 
+                "Cash": 2.1 
+            } 
+        },
+        { 
+            year: "2024", 
+            label: "Momentum vs diversification", 
+            returns: { 
+                "US EQ": 24.2, 
+                "Europe EQ": 9.0, 
+                "China EQ": 16.4, 
+                "Global Bonds": 2.8, 
+                "Gold": 27.4, 
+                "Cash": 5.1 
+            } 
+        }
     ];
 
     let currentRound = 0;
@@ -58,6 +123,9 @@
 
     function getRoundData() { return ROUNDS_DATA[currentRound]; }
     function getAssetNames() { return Object.keys(getRoundData().returns); }
+
+    // TOLERANCE for rounding errors
+    const TOLERANCE = 0.10;
 
     // ----- Reset All Game -----
     function resetAllGame() {
@@ -132,13 +200,15 @@
                 inputValues[name] = { dollar: roundToTwo(val), percent: pct };
             });
         } else if (type === 'equity') {
-            const equityAssets = ['USA Eq', 'Europe Eq', 'Japan Eq', 'China Eq'];
-            const fiAssets = ['USA FI', 'Europe FI', 'Japan FI', 'China FI'];
+            const equityAssets = ['US EQ', 'Europe EQ', 'China EQ'];
+            const otherAssets = ['Global Bonds', 'Gold', 'Cash'];
             
-            const equityPct = 70;
-            const fiPct = 30;
+            const equityPct = 60;
+            const bondsPct = 20;
+            const goldPct = 10;
+            const cashPct = 10;
+            
             const equityEach = equityPct / equityAssets.length;
-            const fiEach = fiPct / fiAssets.length;
             
             assetNames.forEach(name => {
                 let val = 0;
@@ -146,23 +216,27 @@
                 if (equityAssets.includes(name)) {
                     pct = equityEach;
                     val = roundToTwo((equityEach / 100) * capital);
-                } else if (fiAssets.includes(name)) {
-                    pct = fiEach;
-                    val = roundToTwo((fiEach / 100) * capital);
+                } else if (name === 'Global Bonds') {
+                    pct = bondsPct;
+                    val = roundToTwo((bondsPct / 100) * capital);
+                } else if (name === 'Gold') {
+                    pct = goldPct;
+                    val = roundToTwo((goldPct / 100) * capital);
                 } else if (name === 'Cash') {
-                    pct = 0;
-                    val = 0;
+                    pct = cashPct;
+                    val = roundToTwo((cashPct / 100) * capital);
                 }
                 inputValues[name] = { dollar: val, percent: pct };
             });
         } else if (type === 'defensive') {
-            const equityAssets = ['USA Eq', 'Europe Eq', 'Japan Eq', 'China Eq'];
-            const fiAssets = ['USA FI', 'Europe FI', 'Japan FI', 'China FI'];
+            const equityAssets = ['US EQ', 'Europe EQ', 'China EQ'];
             
-            const equityPct = 30;
-            const fiPct = 70;
+            const equityPct = 20;
+            const bondsPct = 30;
+            const goldPct = 20;
+            const cashPct = 30;
+            
             const equityEach = equityPct / equityAssets.length;
-            const fiEach = fiPct / fiAssets.length;
             
             assetNames.forEach(name => {
                 let val = 0;
@@ -170,12 +244,15 @@
                 if (equityAssets.includes(name)) {
                     pct = equityEach;
                     val = roundToTwo((equityEach / 100) * capital);
-                } else if (fiAssets.includes(name)) {
-                    pct = fiEach;
-                    val = roundToTwo((fiEach / 100) * capital);
+                } else if (name === 'Global Bonds') {
+                    pct = bondsPct;
+                    val = roundToTwo((bondsPct / 100) * capital);
+                } else if (name === 'Gold') {
+                    pct = goldPct;
+                    val = roundToTwo((goldPct / 100) * capital);
                 } else if (name === 'Cash') {
-                    pct = 0;
-                    val = 0;
+                    pct = cashPct;
+                    val = roundToTwo((cashPct / 100) * capital);
                 }
                 inputValues[name] = { dollar: val, percent: pct };
             });
@@ -337,9 +414,8 @@
             }
         });
         
-        // Only show error if significantly over (more than 0.05)
         let errorMsg = '';
-        if (sumDollar > capital + 0.05) {
+        if (sumDollar > capital + TOLERANCE) {
             errorMsg = `⚠️ Total allocation ($${fmt(sumDollar)}) exceeds capital ($${fmt(capital)}).`;
         } else if ((currentMode === 'percent' || currentMode === 'both') && sumDollar > 0.01) {
             if (Math.abs(sumPercent - 100) > 1) {
@@ -384,7 +460,7 @@
             
             dollarAmt = roundToTwo(dollarAmt);
             
-            if (dollarAmt > capital + 0.05) {
+            if (dollarAmt > capital + TOLERANCE) {
                 error = true;
             }
             allocated += dollarAmt;
@@ -393,11 +469,12 @@
 
         allocated = roundToTwo(allocated);
 
-        if (error || allocated > capital + 0.05 || allocated < 0.01) {
+        if (error || allocated > capital + TOLERANCE || allocated < 0.01) {
             globalError.textContent = error ? '⚠️ Allocation exceeds capital.' : '⚠️ Allocate at least some capital.';
             return;
         }
 
+        allocated = roundToTwo(allocated);
         const remaining = roundToTwo(capital - allocated);
         if (remaining > 0.01) {
             allocationMap['Cash'] = roundToTwo((allocationMap['Cash'] || 0) + remaining);
@@ -464,7 +541,7 @@
         } else {
             submitBtn.disabled = true;
             submitBtn.textContent = '🏁 Game Over';
-            globalError.textContent = '🎉 All 7 rounds completed! Check your final capital above.';
+            globalError.textContent = '🎉 All 6 rounds completed! Check your final capital above.';
             renderHistory();
         }
         refreshUI();
