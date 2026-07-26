@@ -81,7 +81,7 @@
     let allRoundReturns = [];
     let currentMode = 'dollar';
     let isProcessing = false;
-    let gameCompleted = false;  // <-- NEW FLAG
+    let gameCompleted = false;
 
     // DOM refs
     const roundLabel = document.getElementById('roundLabel');
@@ -421,24 +421,25 @@
         }
         
         globalError.textContent = errorMsg;
-        // Disable submit if game is completed OR there's an error
         submitBtn.disabled = (gameCompleted || errorMsg.length > 0 || sumDollar < 0.01);
     }
 
     // ----- Submit Allocation -----
     function submitAllocation() {
-        // Check if game is already completed
+        // If game is completed, prevent submission
         if (gameCompleted) {
             globalError.textContent = '🎉 Game already completed! All 6 rounds finished.';
             return;
         }
         
-        // Check if all rounds are done
+        // If we've already completed all rounds, prevent submission
         if (history.length >= ROUNDS_DATA.length) {
             gameCompleted = true;
             submitBtn.disabled = true;
             submitBtn.textContent = '🏁 Game Over';
             globalError.textContent = '🎉 All 6 rounds completed! Check your final capital above.';
+            renderHistory();
+            refreshUI();
             return;
         }
         
@@ -552,7 +553,7 @@
             inputValues[name] = { dollar: 0, percent: 0 };
         });
 
-        // Check if all rounds are done
+        // Check if all rounds are complete
         if (history.length >= ROUNDS_DATA.length) {
             gameCompleted = true;
             submitBtn.disabled = true;
@@ -564,7 +565,7 @@
             return;
         }
 
-        // Move to next round
+        // Move to next round ONLY if not complete
         if (currentRound < ROUNDS_DATA.length - 1) {
             currentRound++;
             updateRoundHeader();
@@ -599,13 +600,12 @@
     }
 
     function updateRoundHeader() {
-        // Only show round number, not "Round 7"
-        if (currentRound < ROUNDS_DATA.length) {
+        if (gameCompleted || currentRound >= ROUNDS_DATA.length) {
+            roundLabel.textContent = `🏁 Game Over`;
+            yearTag.textContent = `🎉 All rounds completed`;
+        } else {
             roundLabel.textContent = `Round ${currentRound + 1}`;
             yearTag.textContent = `??? · Hidden year`;
-        } else {
-            roundLabel.textContent = `Game Over`;
-            yearTag.textContent = `🎉 All rounds completed`;
         }
     }
 
@@ -615,7 +615,6 @@
             return;
         }
         let html = '';
-        // Only show up to 6 rounds
         const displayHistory = history.slice(0, ROUNDS_DATA.length);
         for (let h of displayHistory) {
             const allocStr = Object.entries(h.allocation)
@@ -643,9 +642,7 @@
         resultBlock.style.display = 'none';
         globalError.textContent = '';
         
-        // Only reset if game isn't completed or if we want to continue
         if (gameCompleted) {
-            // If game is completed, reset button should trigger full reset
             if (confirm('Game is already completed. Would you like to reset and start over?')) {
                 performReset();
             }
@@ -657,6 +654,7 @@
         if (currentRound === ROUNDS_DATA.length - 1 && history.length === ROUNDS_DATA.length) {
             submitBtn.disabled = true;
             submitBtn.textContent = '🏁 Game Over';
+            gameCompleted = true;
         } else {
             submitBtn.textContent = '✅ Done — reveal returns';
         }
@@ -677,7 +675,6 @@
             try {
                 const data = JSON.parse(savedData);
                 if (data.history && data.history.length > 0) {
-                    // Remove duplicates from history - KEEP ONLY UNIQUE ROUNDS
                     let uniqueHistory = [];
                     let seenRounds = new Set();
                     for (let h of data.history) {
@@ -689,7 +686,6 @@
                     history = uniqueHistory;
                     capital = data.currentCapital || 10000.0;
                     
-                    // Remove duplicates from allRoundReturns
                     let uniqueReturns = [];
                     let seenYears = new Set();
                     for (let r of (data.allRoundReturns || [])) {
@@ -700,7 +696,6 @@
                     }
                     allRoundReturns = uniqueReturns;
                     
-                    // TRUNCATE: If history has more than 6 rounds, keep only the last 6
                     if (history.length > ROUNDS_DATA.length) {
                         history = history.slice(-ROUNDS_DATA.length);
                         history = history.map((h, i) => ({ ...h, round: i + 1 }));
@@ -710,7 +705,6 @@
                         allRoundReturns = allRoundReturns.slice(-ROUNDS_DATA.length);
                     }
                     
-                    // Save the cleaned data back
                     saveAllData();
                     
                     // Check if all rounds are done
