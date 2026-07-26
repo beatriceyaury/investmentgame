@@ -384,4 +384,47 @@
                         <div class="allocation-row total-row">
                             <span class="asset-name">TOTAL</span>
                             <div class="asset-bar" style="background: #dce8f5;">
-                                <div class="fill" style="width: 100
+                                <div class="fill" style="width: 100%; background: #b6ccdf; color: #0b2a42;">
+                                    100%
+                                </div>
+                            </div>
+                            <span class="asset-amount">$${totalAllocated.toFixed(2)}</span>
+                            <span class="asset-percent">100%</span>
+                        </div>
+                    </div>
+
+                    <div class="round-footer">
+                        <span>💰 Cash allocation: <span class="highlight">$${(allocations['Cash'] || 0).toFixed(2)}</span> (${totalCapital > 0 ? ((allocations['Cash'] || 0) / totalCapital * 100).toFixed(1) : 0}%)</span>
+                        <span>📊 Total allocated: <span class="highlight">$${totalAllocated.toFixed(2)}</span></span>
+                    </div>
+                </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // Load data when page loads
+        document.addEventListener('DOMContentLoaded', loadPortfolio);
+        
+        // Listen for storage changes
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'gameData' || e.key === 'gameHistory') {
+                console.log('🔄 Data updated, refreshing portfolio...');
+                loadPortfolio();
+            }
+        });
+        
+        // Check for reset every 2 seconds
+        let lastResetTime = localStorage.getItem('gameReset') || '0';
+        setInterval(() => {
+            const currentReset = localStorage.getItem('gameReset') || '0';
+            if (currentReset !== lastResetTime) {
+                lastResetTime = currentReset;
+                console.log('🔄 Reset detected, refreshing portfolio...');
+                loadPortfolio();
+            }
+        }, 2000);
+    </script>
+</body>
+</html>
