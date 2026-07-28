@@ -119,13 +119,11 @@
         ROUNDS_DATA = ALL_SETS[setKey].rounds;
         setSubHeader.textContent = ALL_SETS[setKey].subheader;
         
-        // Update active button
         document.querySelectorAll('.set-btn').forEach(btn => {
             btn.classList.remove('active');
         });
         document.querySelector(`[data-set="${setKey}"]`).classList.add('active');
         
-        // Reset game with new set
         performReset();
     }
 
@@ -266,7 +264,7 @@
         refreshUI();
     }
 
-    // ----- Render Assets with Dual Input -----
+    // ----- Render Assets with Dual Input - FIXED LAYOUT -----
     function renderAssets() {
         const assetNames = getAssetNames();
         let html = '';
@@ -287,7 +285,6 @@
         }
         
         for (let name of assetNames) {
-            const isCash = name === 'Cash';
             const dollarVal = inputValues[name]?.dollar || 0;
             const percentVal = inputValues[name]?.percent || 0;
             const assetType = assetTypes[name] || '🔒 hidden';
@@ -699,7 +696,6 @@
             return;
         }
 
-        // Load saved set preference
         const savedSet = localStorage.getItem('currentSet');
         if (savedSet && ALL_SETS[savedSet]) {
             currentSet = savedSet;
@@ -785,7 +781,6 @@
             }
         }
         
-        // Start fresh
         currentRound = 0;
         capital = 10000.0;
         history = [];
@@ -806,18 +801,15 @@
     }
 
     // ----- Event Listeners -----
-    // Set buttons
-    setA.addEventListener('click', () => switchSet('A'));
-    setB.addEventListener('click', () => switchSet('B'));
-    setC.addEventListener('click', () => switchSet('C'));
-    setD.addEventListener('click', () => switchSet('D'));
+    if (setA) setA.addEventListener('click', () => switchSet('A'));
+    if (setB) setB.addEventListener('click', () => switchSet('B'));
+    if (setC) setC.addEventListener('click', () => switchSet('C'));
+    if (setD) setD.addEventListener('click', () => switchSet('D'));
 
-    // Mode buttons
     if (modeDollar) modeDollar.addEventListener('click', () => setMode('dollar'));
     if (modePercent) modePercent.addEventListener('click', () => setMode('percent'));
     if (modeBoth) modeBoth.addEventListener('click', () => setMode('both'));
 
-    // Quick actions
     if (equalAlloc) equalAlloc.addEventListener('click', () => applyQuickAction('equal'));
     if (cashOnly) cashOnly.addEventListener('click', () => applyQuickAction('cash'));
     if (equityHeavy) equityHeavy.addEventListener('click', () => applyQuickAction('equity'));
@@ -828,6 +820,5 @@
     if (resetBtn) resetBtn.addEventListener('click', resetRound);
     if (resetAllBtn) resetAllBtn.addEventListener('click', resetAllGame);
 
-    // ----- Start -----
     document.addEventListener('DOMContentLoaded', init);
 })();
