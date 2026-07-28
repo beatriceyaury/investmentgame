@@ -141,7 +141,6 @@
             margin-bottom: 0.5rem;
         }
         
-        /* Image upload box */
         .image-upload-hint {
             background: #fefce8;
             border: 1px solid #fde68a;
@@ -153,6 +152,7 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            flex-wrap: wrap;
         }
         
         @media (max-width: 700px) {
@@ -194,27 +194,13 @@
             <div class="sub">Understand the 6 asset classes in the game</div>
         </div>
 
-        <!-- Asset Info Image with fallback -->
+        <!-- Asset Info Image - FIXED: Changed to "assetinfo" without space -->
         <img 
-            src="asset info.jpeg" 
+            src="assetinfo.jpeg" 
             alt="Asset Class Information" 
             class="asset-info-header-image"
             onerror="this.style.display='none'; document.getElementById('imageFallback').style.display='block';"
         />
-        <div id="imageFallback" class="asset-info-header-image-placeholder" style="display:none;">
-            <span class="big-icon">🖼️</span>
-            <strong>📸 Asset Info Image</strong>
-            <p style="margin-top: 0.3rem; font-size: 0.85rem;">
-                Save your image as <code style="background:#e2ebf3; padding:0.1rem 0.4rem; border-radius:4px;">asset-info.jpeg</code> in the same folder to display it here.
-            </p>
-        </div>
-
-        <!-- Hint for adding image -->
-        <div class="image-upload-hint">
-            💡 <strong>Tip:</strong> To add an image, save it as <code style="background:#fde68a; padding:0.1rem 0.4rem; border-radius:4px;">asset-info.jpeg</code> in the same folder as this page.
-        </div>
-
-        <div class="asset-info-container">
             <!-- US EQ -->
             <div class="asset-info-card">
                 <div class="asset-icon">🇺🇸</div>
