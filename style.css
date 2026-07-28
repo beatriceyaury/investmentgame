@@ -13,7 +13,7 @@ body {
 }
 
 .app {
-    max-width: 900px;
+    max-width: 1200px;  /* CHANGED from 900px to 1200px */
     width: 100%;
     background: rgba(255, 255, 255, 0.92);
     backdrop-filter: blur(8px);
@@ -249,7 +249,7 @@ h1 {
     border-color: #1f3a57;
 }
 
-/* ===== ASSET GRID - FIXED LAYOUT ===== */
+/* ===== ASSET GRID ===== */
 .asset-grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -517,6 +517,7 @@ h1 {
     .app {
         padding: 0.8rem;
         border-radius: 1.2rem;
+        margin: 0.5rem;
     }
     
     .asset-item {
@@ -608,6 +609,7 @@ h1 {
     .app {
         padding: 0.5rem;
         border-radius: 0.8rem;
+        margin: 0.2rem;
     }
     
     .round-panel {
