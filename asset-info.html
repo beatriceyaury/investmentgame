@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Asset Information</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .asset-info-container {
+            padding: 1.5rem 0;
+        }
+        
+        .asset-info-card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 1.5rem 2rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e2ebf3;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .asset-info-card .asset-icon {
+            font-size: 3rem;
+            min-width: 60px;
+            text-align: center;
+        }
+        
+        .asset-info-card .asset-details {
+            flex: 1;
+        }
+        
+        .asset-info-card .asset-details h3 {
+            color: #0b2a42;
+            font-size: 1.3rem;
+            margin-bottom: 0.3rem;
+        }
+        
+        .asset-info-card .asset-details .asset-type {
+            display: inline-block;
+            padding: 0.2rem 1rem;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .asset-info-card .asset-details .asset-type.equity {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+        
+        .asset-info-card .asset-details .asset-type.bond {
+            background: #d1fae5;
+            color: #059669;
+        }
+        
+        .asset-info-card .asset-details .asset-type.commodity {
+            background: #fef3c7;
+            color: #d97706;
+        }
+        
+        .asset-info-card .asset-details .asset-type.cash {
+            background: #e5e7eb;
+            color: #4b5563;
+        }
+        
+        .asset-info-card .asset-details p {
+            color: #1a3b55;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+        
+        .asset-info-card .asset-return-example {
+            background: #f8fbfe;
+            padding: 0.5rem 1rem;
+            border-radius: 0.8rem;
+            font-size: 0.85rem;
+            color: #6b8a9e;
+            margin-top: 0.5rem;
+        }
+        
+        .asset-info-card .asset-return-example strong {
+            color: #0b2a42;
+        }
+        
+        .asset-type-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .type-badge {
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .type-badge.equity { background: #dbeafe; color: #1d4ed8; }
+        .type-badge.bond { background: #d1fae5; color: #059669; }
+        .type-badge.commodity { background: #fef3c7; color: #d97706; }
+        .type-badge.cash { background: #e5e7eb; color: #4b5563; }
+        
+        @media (max-width: 700px) {
+            .asset-info-card {
+                flex-direction: column;
+                text-align: center;
+                padding: 1.2rem;
+            }
+            
+            .asset-type-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- Navigation Bar -->
+        <div class="nav-bar">
+            <a href="index.html">🏠 Game</a>
+            <a href="instructions.html">📖 Instructions</a>
+            <a href="results.html">📊 Results</a>
+            <a href="portfolio.html">📈 Portfolio</a>
+            <a href="asset-info.html" class="active">📚 Asset Info</a>
+        </div>
+
+        <h1>📚 Asset Class Information</h1>
+        <div class="sub">Understand the 6 asset classes in the game</div>
+
+        <div class="asset-info-container">
+            <!-- US EQ -->
+            <div class="asset-info-card">
+                <div class="asset-icon">🇺🇸</div>
+                <div class="asset-details">
+                    <h3>US EQ</h3>
+                    <span class="asset-type equity">📈 Equity</span>
+                    <p>US Equities represent shares of publicly traded companies in the United States. They are the largest and most liquid equity market globally.</p>
+                    <div class="asset-return-example">
+                        <strong>Characteristics:</strong> High growth potential, higher volatility, influenced by US economic data, corporate earnings, and Federal Reserve policy.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Europe EQ -->
+            <div class="asset-info-card">
+                <div class="asset-icon">🇪🇺</div>
+                <div class="asset-details">
+                    <h3>Europe EQ</h3>
+                    <span class="asset-type equity">📈 Equity</span>
+                    <p>European Equities include companies from developed European markets like the UK, Germany, France, and Switzerland.</p>
+                    <div class="asset-return-example">
+                        <strong>Characteristics:</strong> More cyclical than US equities, influenced by European Central Bank policy, political developments, and global trade.
+                    </div>
+                </div>
+            </div>
+
+            <!-- China EQ -->
+            <div class="asset-info-card">
+                <div class="asset-icon">🇨🇳</div>
+                <div class="asset-details">
+                    <h3>China EQ</h3>
+                    <span class="asset-type equity">📈 Equity</span>
+                    <p>Chinese Equities represent shares of companies listed in mainland China and Hong Kong, spanning technology, consumer, and industrial sectors.</p>
+                    <div class="asset-return-example">
+                        <strong>Characteristics:</strong> High growth potential, higher volatility, influenced by government policy, regulatory changes, and global trade relations.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Global Bonds -->
+            <div class="asset-info-card">
+                <div class="asset-icon">🌍</div>
+                <div class="asset-details">
+                    <h3>Global Bonds</h3>
+                    <span class="asset-type bond">📊 Bond</span>
+                    <p>Global Bonds are fixed-income securities issued by governments and corporations around the world. They provide income and stability.</p>
+                    <div class="asset-return-example">
+                        <strong>Characteristics:</strong> Lower volatility than equities, interest rate sensitive, provides income, safe-haven during market stress.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gold -->
+            <div class="asset-info-card">
+                <div class="asset-icon">🥇</div>
+                <div class="asset-details">
+                    <h3>Gold</h3>
+                    <span class="asset-type commodity">🏆 Commodity</span>
+                    <p>Gold is a precious metal that serves as a store of value and hedge against inflation, currency devaluation, and geopolitical uncertainty.</p>
+                    <div class="asset-return-example">
+                        <strong>Characteristics:</strong> Safe-haven asset, inflation hedge, uncorrelated to stocks and bonds, performs well during crises.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cash -->
+            <div class="asset-info-card">
+                <div class="asset-icon">💵</div>
+                <div class="asset-details">
+                    <h3>Cash</h3>
+                    <span class="asset-type cash">💰 Cash</span>
+                    <p>Cash represents holding money in short-term, low-risk instruments like money market funds, treasury bills, or bank deposits.</p>
+                    <div class="asset-return-example">
+                        <strong>Characteristics:</strong> Lowest risk, lowest return, provides liquidity, preserves capital during market downturns.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Asset Type Legend -->
+            <div style="margin-top: 2rem; padding: 1rem 1.5rem; background: #f8fbfe; border-radius: 1rem; border: 1px solid #e8eef6;">
+                <h4 style="color: #0b2a42; margin-bottom: 0.5rem;">📋 Asset Type Legend</h4>
+                <div class="asset-type-grid">
+                    <div><span class="type-badge equity">📈 Equity</span> — Ownership in companies, high growth potential</div>
+                    <div><span class="type-badge bond">📊 Bond</span> — Fixed income, lower volatility</div>
+                    <div><span class="type-badge commodity">🏆 Commodity</span> — Physical assets, inflation hedge</div>
+                    <div><span class="type-badge cash">💰 Cash</span> — Lowest risk, preserves capital</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footnote">Understanding asset classes helps you make better investment decisions</div>
+    </div>
+</body>
+</html>
