@@ -633,4 +633,201 @@
             roundLabel.textContent = `🏁 Game Over`;
             yearTag.textContent = `🎉 All rounds completed`;
         } else {
-            roundLabel.textContent
+            roundLabel.textContent = `Round ${currentRound + 1}`;
+            yearTag.textContent = `🔒 Hidden year`;
+        }
+    }
+
+    function renderHistory() {
+        if (history.length === 0) {
+            historyEntries.innerHTML = `<span style="color:#4d6f8b;">— allocations & results will appear here</span>`;
+            return;
+        }
+        let html = '';
+        const displayHistory = history.slice(0, ROUNDS_DATA.length);
+        for (let h of displayHistory) {
+            const allocStr = Object.entries(h.allocation)
+                .filter(([k,v]) => v > 0)
+                .map(([k,v]) => `${k}: ${fmt(v)}`)
+                .join(' · ');
+            html += `
+                <div class="entry">
+                    <span class="tag">R${h.round} (${h.year})</span>
+                    <span>💰 ${fmt(h.returnAmount)} (${fmt(h.returnPercent)}%)</span>
+                    <span>🔁 capital: ${fmt(h.newCapital)}</span>
+                    <span style="font-size:0.8rem; color:#2b577a;">${allocStr}</span>
+                </div>
+            `;
+        }
+        historyEntries.innerHTML = html;
+    }
+
+    function resetRound() {
+        const assetNames = getAssetNames();
+        assetNames.forEach(name => {
+            inputValues[name] = { dollar: 0, percent: 0 };
+        });
+        renderAssets();
+        resultBlock.style.display = 'none';
+        globalError.textContent = '';
+        
+        if (gameCompleted) {
+            if (confirm('Game is already completed. Would you like to reset and start over?')) {
+                performReset();
+            }
+            return;
+        }
+        
+        submitBtn.disabled = false;
+        yearTag.textContent = `🔒 Hidden year`;
+        if (currentRound === ROUNDS_DATA.length - 1 && history.length === ROUNDS_DATA.length) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = '🏁 Game Over';
+            gameCompleted = true;
+        } else {
+            submitBtn.textContent = '✅ Done — reveal returns';
+        }
+        refreshUI();
+    }
+
+    function init() {
+        isProcessing = false;
+        gameCompleted = false;
+        
+        if (!assetGrid) {
+            console.error('Asset grid not found!');
+            return;
+        }
+
+        // Load saved set preference
+        const savedSet = localStorage.getItem('currentSet');
+        if (savedSet && ALL_SETS[savedSet]) {
+            currentSet = savedSet;
+            ROUNDS_DATA = ALL_SETS[savedSet].rounds;
+            setSubHeader.textContent = ALL_SETS[savedSet].subheader;
+            document.querySelectorAll('.set-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-set="${savedSet}"]`).classList.add('active');
+        }
+
+        const savedData = localStorage.getItem('gameData');
+        if (savedData) {
+            try {
+                const data = JSON.parse(savedData);
+                if (data.history && data.history.length > 0) {
+                    let uniqueHistory = [];
+                    let seenRounds = new Set();
+                    for (let h of data.history) {
+                        if (!seenRounds.has(h.round)) {
+                            seenRounds.add(h.round);
+                            uniqueHistory.push(h);
+                        }
+                    }
+                    history = uniqueHistory;
+                    capital = data.currentCapital || 10000.0;
+                    
+                    let uniqueReturns = [];
+                    let seenYears = new Set();
+                    for (let r of (data.allRoundReturns || [])) {
+                        if (!seenYears.has(r.year)) {
+                            seenYears.add(r.year);
+                            uniqueReturns.push(r);
+                        }
+                    }
+                    allRoundReturns = uniqueReturns;
+                    
+                    if (history.length > ROUNDS_DATA.length) {
+                        history = history.slice(-ROUNDS_DATA.length);
+                        history = history.map((h, i) => ({ ...h, round: i + 1 }));
+                    }
+                    
+                    if (allRoundReturns.length > ROUNDS_DATA.length) {
+                        allRoundReturns = allRoundReturns.slice(-ROUNDS_DATA.length);
+                    }
+                    
+                    saveAllData();
+                    
+                    if (history.length >= ROUNDS_DATA.length) {
+                        gameCompleted = true;
+                        currentRound = ROUNDS_DATA.length - 1;
+                        submitBtn.disabled = true;
+                        submitBtn.textContent = '🏁 Game Over';
+                        globalError.textContent = '🎉 All 6 rounds completed! Check your final capital above.';
+                    } else {
+                        currentRound = history.length;
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = '✅ Done — reveal returns';
+                    }
+                    
+                    const assetNames = getAssetNames();
+                    assetNames.forEach(name => {
+                        inputValues[name] = { dollar: 0, percent: 0 };
+                    });
+                    
+                    updateRoundHeader();
+                    renderAssets();
+                    renderHistory();
+                    refreshUI();
+                    
+                    if (history.length > 0) {
+                        const last = history[history.length - 1];
+                        yearTag.textContent = `🔒 ${last.year}`;
+                        resultBlock.style.display = 'block';
+                        returnAmountDisplay.textContent = (last.returnAmount >= 0 ? '+' : '') + fmt(last.returnAmount);
+                        returnPercentDisplay.textContent = fmt(last.returnPercent) + '%';
+                        newCapitalDisplay.textContent = fmt(last.newCapital);
+                    }
+                    return;
+                }
+            } catch(e) {
+                console.log('Error loading saved data:', e);
+            }
+        }
+        
+        // Start fresh
+        currentRound = 0;
+        capital = 10000.0;
+        history = [];
+        allRoundReturns = [];
+        gameCompleted = false;
+        const assetNames = getAssetNames();
+        assetNames.forEach(name => {
+            inputValues[name] = { dollar: 0, percent: 0 };
+        });
+        updateRoundHeader();
+        renderAssets();
+        renderHistory();
+        resultBlock.style.display = 'none';
+        submitBtn.disabled = false;
+        submitBtn.textContent = '✅ Done — reveal returns';
+        globalError.textContent = '';
+        refreshUI();
+    }
+
+    // ----- Event Listeners -----
+    // Set buttons
+    setA.addEventListener('click', () => switchSet('A'));
+    setB.addEventListener('click', () => switchSet('B'));
+    setC.addEventListener('click', () => switchSet('C'));
+    setD.addEventListener('click', () => switchSet('D'));
+
+    // Mode buttons
+    if (modeDollar) modeDollar.addEventListener('click', () => setMode('dollar'));
+    if (modePercent) modePercent.addEventListener('click', () => setMode('percent'));
+    if (modeBoth) modeBoth.addEventListener('click', () => setMode('both'));
+
+    // Quick actions
+    if (equalAlloc) equalAlloc.addEventListener('click', () => applyQuickAction('equal'));
+    if (cashOnly) cashOnly.addEventListener('click', () => applyQuickAction('cash'));
+    if (equityHeavy) equityHeavy.addEventListener('click', () => applyQuickAction('equity'));
+    if (defensive) defensive.addEventListener('click', () => applyQuickAction('defensive'));
+    if (clearAll) clearAll.addEventListener('click', () => applyQuickAction('clear'));
+
+    if (submitBtn) submitBtn.addEventListener('click', submitAllocation);
+    if (resetBtn) resetBtn.addEventListener('click', resetRound);
+    if (resetAllBtn) resetAllBtn.addEventListener('click', resetAllGame);
+
+    // ----- Start -----
+    document.addEventListener('DOMContentLoaded', init);
+})();
