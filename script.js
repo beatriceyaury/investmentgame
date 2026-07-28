@@ -1,80 +1,58 @@
 (function() {
-    // ----- SET A: Fear vs Opportunity - 6 Rounds, 6 Assets -----
-    const ROUNDS_DATA = [
-        { 
-            year: "2008", 
-            label: "Global financial crisis", 
-            returns: { 
-                "US EQ": -37.0, 
-                "Europe EQ": -45.0, 
-                "China EQ": -65.4, 
-                "Global Bonds": 5.2, 
-                "Gold": 5.5, 
-                "Cash": 1.4 
-            } 
+    // ----- ALL DATA SETS -----
+    const ALL_SETS = {
+        A: {
+            name: "Fear vs Opportunity",
+            subheader: "Set A · Fear vs Opportunity · 6 rounds · $10,000 start",
+            rounds: [
+                { year: "2008", label: "Global financial crisis", returns: { "US EQ": -37.0, "Europe EQ": -45.0, "China EQ": -65.4, "Global Bonds": 5.2, "Gold": 5.5, "Cash": 1.4 } },
+                { year: "2017", label: "Growth optimism", returns: { "US EQ": 21.8, "Europe EQ": 25.0, "China EQ": 54.1, "Global Bonds": 7.4, "Gold": 13.7, "Cash": 0.8 } },
+                { year: "2020", label: "Pandemic shock", returns: { "US EQ": 18.4, "Europe EQ": 5.0, "China EQ": 29.5, "Global Bonds": 9.2, "Gold": 24.6, "Cash": 0.6 } },
+                { year: "2012", label: "Stabilisation", returns: { "US EQ": 16.0, "Europe EQ": 19.0, "China EQ": 14.3, "Global Bonds": 4.2, "Gold": 7.1, "Cash": 0.1 } },
+                { year: "2022", label: "Inflation and tightening", returns: { "US EQ": -18.1, "Europe EQ": -15.0, "China EQ": -21.8, "Global Bonds": -16.2, "Gold": 0.4, "Cash": 2.1 } },
+                { year: "2024", label: "Momentum vs diversification", returns: { "US EQ": 24.2, "Europe EQ": 9.0, "China EQ": 16.4, "Global Bonds": 2.8, "Gold": 27.4, "Cash": 5.1 } }
+            ]
         },
-        { 
-            year: "2017", 
-            label: "Growth optimism", 
-            returns: { 
-                "US EQ": 21.8, 
-                "Europe EQ": 25.0, 
-                "China EQ": 54.1, 
-                "Global Bonds": 7.4, 
-                "Gold": 13.7, 
-                "Cash": 0.8 
-            } 
+        B: {
+            name: "The Contrarian Test",
+            subheader: "Set B · The Contrarian Test · 6 rounds · $10,000 start",
+            rounds: [
+                { year: "2011", label: "Risk-off sentiment", returns: { "US EQ": 2.1, "Europe EQ": -11.0, "China EQ": -21.7, "Global Bonds": 7.7, "Gold": 10.1, "Cash": 0.1 } },
+                { year: "2021", label: "Reopening and inflation debate", returns: { "US EQ": 28.7, "Europe EQ": 16.0, "China EQ": -21.6, "Global Bonds": -4.7, "Gold": -3.6, "Cash": 0.1 } },
+                { year: "2019", label: "Policy pivot expectations", returns: { "US EQ": 31.5, "Europe EQ": 24.0, "China EQ": 23.5, "Global Bonds": 6.8, "Gold": 18.3, "Cash": 2.2 } },
+                { year: "2008", label: "Global financial crisis", returns: { "US EQ": -37.0, "Europe EQ": -45.0, "China EQ": -65.4, "Global Bonds": 5.2, "Gold": 5.5, "Cash": 1.4 } },
+                { year: "2023", label: "Concentrated recovery", returns: { "US EQ": 26.3, "Europe EQ": 19.0, "China EQ": -11.2, "Global Bonds": 5.7, "Gold": 13.1, "Cash": 5.2 } },
+                { year: "2013", label: "Liquidity-driven expansion", returns: { "US EQ": 32.4, "Europe EQ": 24.0, "China EQ": -2.6, "Global Bonds": -2.1, "Gold": -28.0, "Cash": 0.1 } }
+            ]
         },
-        { 
-            year: "2020", 
-            label: "Pandemic shock", 
-            returns: { 
-                "US EQ": 18.4, 
-                "Europe EQ": 5.0, 
-                "China EQ": 29.5, 
-                "Global Bonds": 9.2, 
-                "Gold": 24.6, 
-                "Cash": 0.6 
-            } 
+        C: {
+            name: "Global Rotation",
+            subheader: "Set C · Global Rotation · 6 rounds · $10,000 start",
+            rounds: [
+                { year: "2014", label: "Growth concerns", returns: { "US EQ": 13.7, "Europe EQ": -6.0, "China EQ": 5.1, "Global Bonds": 6.0, "Gold": -1.5, "Cash": 0.1 } },
+                { year: "2020", label: "Pandemic shock", returns: { "US EQ": 18.4, "Europe EQ": 5.0, "China EQ": 29.5, "Global Bonds": 9.2, "Gold": 24.6, "Cash": 0.6 } },
+                { year: "2017", label: "Growth optimism", returns: { "US EQ": 21.8, "Europe EQ": 25.0, "China EQ": 54.1, "Global Bonds": 7.4, "Gold": 13.7, "Cash": 0.8 } },
+                { year: "2022", label: "Inflation and tightening", returns: { "US EQ": -18.1, "Europe EQ": -15.0, "China EQ": -21.8, "Global Bonds": -16.2, "Gold": 0.4, "Cash": 2.1 } },
+                { year: "2024", label: "Momentum vs diversification", returns: { "US EQ": 24.2, "Europe EQ": 9.0, "China EQ": 16.4, "Global Bonds": 2.8, "Gold": 27.4, "Cash": 5.1 } },
+                { year: "2009", label: "Recovery or trap", returns: { "US EQ": 26.5, "Europe EQ": 32.0, "China EQ": 53.0, "Global Bonds": 5.9, "Gold": 24.3, "Cash": 0.2 } }
+            ]
         },
-        { 
-            year: "2012", 
-            label: "Stabilisation", 
-            returns: { 
-                "US EQ": 16.0, 
-                "Europe EQ": 19.0, 
-                "China EQ": 14.3, 
-                "Global Bonds": 4.2, 
-                "Gold": 7.1, 
-                "Cash": 0.1 
-            } 
-        },
-        { 
-            year: "2022", 
-            label: "Inflation and tightening", 
-            returns: { 
-                "US EQ": -18.1, 
-                "Europe EQ": -15.0, 
-                "China EQ": -21.8, 
-                "Global Bonds": -16.2, 
-                "Gold": 0.4, 
-                "Cash": 2.1 
-            } 
-        },
-        { 
-            year: "2024", 
-            label: "Momentum vs diversification", 
-            returns: { 
-                "US EQ": 24.2, 
-                "Europe EQ": 9.0, 
-                "China EQ": 16.4, 
-                "Global Bonds": 2.8, 
-                "Gold": 27.4, 
-                "Cash": 5.1 
-            } 
+        D: {
+            name: "Decision-Making Under Uncertainty",
+            subheader: "Set D · Decision-Making Under Uncertainty · 6 rounds · $10,000 start",
+            rounds: [
+                { year: "2018", label: "Late-cycle uncertainty", returns: { "US EQ": -4.4, "Europe EQ": -14.0, "China EQ": -18.8, "Global Bonds": -1.2, "Gold": -1.6, "Cash": 1.8 } },
+                { year: "2012", label: "Stabilisation", returns: { "US EQ": 16.0, "Europe EQ": 19.0, "China EQ": 14.3, "Global Bonds": 4.2, "Gold": 7.1, "Cash": 0.1 } },
+                { year: "2021", label: "Reopening and inflation debate", returns: { "US EQ": 28.7, "Europe EQ": 16.0, "China EQ": -21.6, "Global Bonds": -4.7, "Gold": -3.6, "Cash": 0.1 } },
+                { year: "2008", label: "Global financial crisis", returns: { "US EQ": -37.0, "Europe EQ": -45.0, "China EQ": -65.4, "Global Bonds": 5.2, "Gold": 5.5, "Cash": 1.4 } },
+                { year: "2023", label: "Concentrated recovery", returns: { "US EQ": 26.3, "Europe EQ": 19.0, "China EQ": -11.2, "Global Bonds": 5.7, "Gold": 13.1, "Cash": 5.2 } },
+                { year: "2020", label: "Pandemic shock", returns: { "US EQ": 18.4, "Europe EQ": 5.0, "China EQ": 29.5, "Global Bonds": 9.2, "Gold": 24.6, "Cash": 0.6 } }
+            ]
         }
-    ];
+    };
 
+    let currentSet = 'A';
+    let ROUNDS_DATA = ALL_SETS.A.rounds;
     let currentRound = 0;
     let capital = 10000.0;
     let history = [];
@@ -99,6 +77,13 @@
     const returnPercentDisplay = document.getElementById('returnPercentDisplay');
     const newCapitalDisplay = document.getElementById('newCapitalDisplay');
     const historyEntries = document.getElementById('historyEntries');
+    const setSubHeader = document.getElementById('setSubHeader');
+
+    // Set buttons
+    const setA = document.getElementById('setA');
+    const setB = document.getElementById('setB');
+    const setC = document.getElementById('setC');
+    const setD = document.getElementById('setD');
 
     // Mode buttons
     const modeDollar = document.getElementById('modeDollar');
@@ -127,6 +112,22 @@
     function getAssetNames() { return Object.keys(getRoundData().returns); }
 
     const TOLERANCE = 0.10;
+
+    // ----- Set Switching -----
+    function switchSet(setKey) {
+        currentSet = setKey;
+        ROUNDS_DATA = ALL_SETS[setKey].rounds;
+        setSubHeader.textContent = ALL_SETS[setKey].subheader;
+        
+        // Update active button
+        document.querySelectorAll('.set-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector(`[data-set="${setKey}"]`).classList.add('active');
+        
+        // Reset game with new set
+        performReset();
+    }
 
     // ----- Reset All Game -----
     function resetAllGame() {
@@ -168,7 +169,7 @@
         submitBtn.disabled = false;
         submitBtn.textContent = '✅ Done — reveal returns';
         globalError.textContent = '';
-        yearTag.textContent = '??? · Hidden year';
+        yearTag.textContent = '🔒 Hidden year';
         
         refreshUI();
     }
@@ -204,10 +205,10 @@
             });
         } else if (type === 'equity') {
             const equityAssets = ['US EQ', 'Europe EQ', 'China EQ'];
-            const equityPct = 60;
+            const equityPct = 70;
             const bondsPct = 20;
             const goldPct = 10;
-            const cashPct = 10;
+            const cashPct = 0;
             
             const equityEach = equityPct / equityAssets.length;
             
@@ -225,7 +226,7 @@
                     val = roundToTwo((goldPct / 100) * capital);
                 } else if (name === 'Cash') {
                     pct = cashPct;
-                    val = roundToTwo((cashPct / 100) * capital);
+                    val = 0;
                 }
                 inputValues[name] = { dollar: val, percent: pct };
             });
@@ -270,6 +271,15 @@
         const assetNames = getAssetNames();
         let html = '';
         
+        const assetTypes = {
+            "US EQ": "📈 Equity",
+            "Europe EQ": "📈 Equity",
+            "China EQ": "📈 Equity",
+            "Global Bonds": "📊 Bond",
+            "Gold": "🏆 Commodity",
+            "Cash": "💰 Cash"
+        };
+        
         if (Object.keys(inputValues).length === 0) {
             assetNames.forEach(name => {
                 inputValues[name] = { dollar: 0, percent: 0 };
@@ -280,6 +290,7 @@
             const isCash = name === 'Cash';
             const dollarVal = inputValues[name]?.dollar || 0;
             const percentVal = inputValues[name]?.percent || 0;
+            const assetType = assetTypes[name] || '🔒 hidden';
             
             let inputFields = '';
             
@@ -314,7 +325,7 @@
             html += `
                 <div class="asset-item">
                     <span class="label">${name}</span>
-                    <span class="hidden-badge">${isCash ? '💵 cash' : '🔒 hidden'}</span>
+                    <span class="asset-type-badge">${assetType}</span>
                     ${inputFields}
                     <span class="pct-display">${displayPct > 0 ? displayPct.toFixed(1) + '%' : ''}</span>
                 </div>
@@ -421,23 +432,36 @@
         }
         
         globalError.textContent = errorMsg;
-        submitBtn.disabled = (gameCompleted || errorMsg.length > 0 || sumDollar < 0.01);
+        if (gameCompleted) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = '🏁 Game Over';
+        } else {
+            submitBtn.disabled = (errorMsg.length > 0 || sumDollar < 0.01);
+        }
     }
 
     // ----- Submit Allocation -----
     function submitAllocation() {
-        // If game is completed, prevent submission
         if (gameCompleted) {
             globalError.textContent = '🎉 Game already completed! All 6 rounds finished.';
             return;
         }
         
-        // If we've already completed all rounds, prevent submission
         if (history.length >= ROUNDS_DATA.length) {
             gameCompleted = true;
             submitBtn.disabled = true;
             submitBtn.textContent = '🏁 Game Over';
             globalError.textContent = '🎉 All 6 rounds completed! Check your final capital above.';
+            renderHistory();
+            refreshUI();
+            return;
+        }
+        
+        if (currentRound >= ROUNDS_DATA.length) {
+            gameCompleted = true;
+            submitBtn.disabled = true;
+            submitBtn.textContent = '🏁 Game Over';
+            globalError.textContent = '🎉 All 6 rounds completed!';
             renderHistory();
             refreshUI();
             return;
@@ -509,9 +533,8 @@
         const newCapital = roundToTwo(capital + totalReturn);
 
         const data = getRoundData();
-        yearTag.textContent = `${data.year} · ${data.label}`;
+        yearTag.textContent = `🔒 ${data.year}`;
 
-        // Check for duplicate round
         const existingRound = history.find(h => h.round === currentRound + 1);
         if (!existingRound) {
             const roundReturnData = {
@@ -547,13 +570,11 @@
 
         saveAllData();
 
-        // Clear inputs after submit
         const assetNamesClear = getAssetNames();
         assetNamesClear.forEach(name => {
             inputValues[name] = { dollar: 0, percent: 0 };
         });
 
-        // Check if all rounds are complete
         if (history.length >= ROUNDS_DATA.length) {
             gameCompleted = true;
             submitBtn.disabled = true;
@@ -565,7 +586,6 @@
             return;
         }
 
-        // Move to next round ONLY if not complete
         if (currentRound < ROUNDS_DATA.length - 1) {
             currentRound++;
             updateRoundHeader();
@@ -573,6 +593,13 @@
             resultBlock.style.display = 'block';
             renderHistory();
             globalError.textContent = '';
+        } else {
+            if (currentRound === ROUNDS_DATA.length - 1) {
+                gameCompleted = true;
+                submitBtn.disabled = true;
+                submitBtn.textContent = '🏁 Game Over';
+                globalError.textContent = '🎉 All 6 rounds completed!';
+            }
         }
         refreshUI();
         isProcessing = false;
@@ -582,13 +609,15 @@
         const data = {
             history: history,
             currentCapital: capital,
-            allRoundReturns: allRoundReturns
+            allRoundReturns: allRoundReturns,
+            currentSet: currentSet
         };
         
         localStorage.setItem('gameHistory', JSON.stringify(history));
         localStorage.setItem('currentCapital', capital.toString());
         localStorage.setItem('allRoundReturns', JSON.stringify(allRoundReturns));
         localStorage.setItem('gameData', JSON.stringify(data));
+        localStorage.setItem('currentSet', currentSet);
         
         try {
             fetch('/api/save', {
@@ -604,182 +633,4 @@
             roundLabel.textContent = `🏁 Game Over`;
             yearTag.textContent = `🎉 All rounds completed`;
         } else {
-            roundLabel.textContent = `Round ${currentRound + 1}`;
-            yearTag.textContent = `??? · Hidden year`;
-        }
-    }
-
-    function renderHistory() {
-        if (history.length === 0) {
-            historyEntries.innerHTML = `<span style="color:#4d6f8b;">— allocations & results will appear here</span>`;
-            return;
-        }
-        let html = '';
-        const displayHistory = history.slice(0, ROUNDS_DATA.length);
-        for (let h of displayHistory) {
-            const allocStr = Object.entries(h.allocation)
-                .filter(([k,v]) => v > 0)
-                .map(([k,v]) => `${k}: ${fmt(v)}`)
-                .join(' · ');
-            html += `
-                <div class="entry">
-                    <span class="tag">R${h.round} (${h.year})</span>
-                    <span>💰 ${fmt(h.returnAmount)} (${fmt(h.returnPercent)}%)</span>
-                    <span>🔁 capital: ${fmt(h.newCapital)}</span>
-                    <span style="font-size:0.8rem; color:#2b577a;">${allocStr}</span>
-                </div>
-            `;
-        }
-        historyEntries.innerHTML = html;
-    }
-
-    function resetRound() {
-        const assetNames = getAssetNames();
-        assetNames.forEach(name => {
-            inputValues[name] = { dollar: 0, percent: 0 };
-        });
-        renderAssets();
-        resultBlock.style.display = 'none';
-        globalError.textContent = '';
-        
-        if (gameCompleted) {
-            if (confirm('Game is already completed. Would you like to reset and start over?')) {
-                performReset();
-            }
-            return;
-        }
-        
-        submitBtn.disabled = false;
-        yearTag.textContent = `??? · Hidden year`;
-        if (currentRound === ROUNDS_DATA.length - 1 && history.length === ROUNDS_DATA.length) {
-            submitBtn.disabled = true;
-            submitBtn.textContent = '🏁 Game Over';
-            gameCompleted = true;
-        } else {
-            submitBtn.textContent = '✅ Done — reveal returns';
-        }
-        refreshUI();
-    }
-
-    function init() {
-        isProcessing = false;
-        gameCompleted = false;
-        
-        if (!assetGrid) {
-            console.error('Asset grid not found!');
-            return;
-        }
-
-        const savedData = localStorage.getItem('gameData');
-        if (savedData) {
-            try {
-                const data = JSON.parse(savedData);
-                if (data.history && data.history.length > 0) {
-                    let uniqueHistory = [];
-                    let seenRounds = new Set();
-                    for (let h of data.history) {
-                        if (!seenRounds.has(h.round)) {
-                            seenRounds.add(h.round);
-                            uniqueHistory.push(h);
-                        }
-                    }
-                    history = uniqueHistory;
-                    capital = data.currentCapital || 10000.0;
-                    
-                    let uniqueReturns = [];
-                    let seenYears = new Set();
-                    for (let r of (data.allRoundReturns || [])) {
-                        if (!seenYears.has(r.year)) {
-                            seenYears.add(r.year);
-                            uniqueReturns.push(r);
-                        }
-                    }
-                    allRoundReturns = uniqueReturns;
-                    
-                    if (history.length > ROUNDS_DATA.length) {
-                        history = history.slice(-ROUNDS_DATA.length);
-                        history = history.map((h, i) => ({ ...h, round: i + 1 }));
-                    }
-                    
-                    if (allRoundReturns.length > ROUNDS_DATA.length) {
-                        allRoundReturns = allRoundReturns.slice(-ROUNDS_DATA.length);
-                    }
-                    
-                    saveAllData();
-                    
-                    // Check if all rounds are done
-                    if (history.length >= ROUNDS_DATA.length) {
-                        gameCompleted = true;
-                        currentRound = ROUNDS_DATA.length - 1;
-                        submitBtn.disabled = true;
-                        submitBtn.textContent = '🏁 Game Over';
-                        globalError.textContent = '🎉 All 6 rounds completed! Check your final capital above.';
-                    } else {
-                        currentRound = history.length;
-                        submitBtn.disabled = false;
-                        submitBtn.textContent = '✅ Done — reveal returns';
-                    }
-                    
-                    const assetNames = getAssetNames();
-                    assetNames.forEach(name => {
-                        inputValues[name] = { dollar: 0, percent: 0 };
-                    });
-                    
-                    updateRoundHeader();
-                    renderAssets();
-                    renderHistory();
-                    refreshUI();
-                    
-                    if (history.length > 0) {
-                        const last = history[history.length - 1];
-                        yearTag.textContent = `${last.year} · ${last.label}`;
-                        resultBlock.style.display = 'block';
-                        returnAmountDisplay.textContent = (last.returnAmount >= 0 ? '+' : '') + fmt(last.returnAmount);
-                        returnPercentDisplay.textContent = fmt(last.returnPercent) + '%';
-                        newCapitalDisplay.textContent = fmt(last.newCapital);
-                    }
-                    return;
-                }
-            } catch(e) {
-                console.log('Error loading saved data:', e);
-            }
-        }
-        
-        // Start fresh
-        currentRound = 0;
-        capital = 10000.0;
-        history = [];
-        allRoundReturns = [];
-        gameCompleted = false;
-        const assetNames = getAssetNames();
-        assetNames.forEach(name => {
-            inputValues[name] = { dollar: 0, percent: 0 };
-        });
-        updateRoundHeader();
-        renderAssets();
-        renderHistory();
-        resultBlock.style.display = 'none';
-        submitBtn.disabled = false;
-        submitBtn.textContent = '✅ Done — reveal returns';
-        globalError.textContent = '';
-        refreshUI();
-    }
-
-    // ----- Event Listeners -----
-    if (modeDollar) modeDollar.addEventListener('click', () => setMode('dollar'));
-    if (modePercent) modePercent.addEventListener('click', () => setMode('percent'));
-    if (modeBoth) modeBoth.addEventListener('click', () => setMode('both'));
-
-    if (equalAlloc) equalAlloc.addEventListener('click', () => applyQuickAction('equal'));
-    if (cashOnly) cashOnly.addEventListener('click', () => applyQuickAction('cash'));
-    if (equityHeavy) equityHeavy.addEventListener('click', () => applyQuickAction('equity'));
-    if (defensive) defensive.addEventListener('click', () => applyQuickAction('defensive'));
-    if (clearAll) clearAll.addEventListener('click', () => applyQuickAction('clear'));
-
-    if (submitBtn) submitBtn.addEventListener('click', submitAllocation);
-    if (resetBtn) resetBtn.addEventListener('click', resetRound);
-    if (resetAllBtn) resetAllBtn.addEventListener('click', resetAllGame);
-
-    // ----- Start -----
-    document.addEventListener('DOMContentLoaded', init);
-})();
+            roundLabel.textContent
