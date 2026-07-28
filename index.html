@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Set A · Fear vs Opportunity · 6-Round Game</title>
+    <title>Investment Game</title>
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -11,25 +11,35 @@
         <!-- Navigation Bar -->
         <div class="nav-bar">
             <a href="index.html" class="active">🏠 Game</a>
+            <a href="instructions.html">📖 Instructions</a>
             <a href="results.html">📊 Results</a>
             <a href="portfolio.html">📈 Portfolio</a>
-            <a href="instructions.html">📖 Instructions</a>
+            <a href="asset-info.html">📚 Asset Info</a>
         </div>
 
-        <h1>📊 Set A · Fear vs Opportunity</h1>
+        <h1>📊 Investment Game</h1>
         
         <div class="game-description">
-            <strong>🎯 The Game:</strong> You start with <strong>$10,000</strong> and face <strong>6 hidden years</strong> (2008–2024).<br>
+            <strong>🎯 The Game:</strong> You start with <strong>$10,000</strong> and face <strong>6 hidden years</strong> of market history.<br>
             For each round, <strong>allocate your capital</strong> across 6 assets. The returns are <strong>hidden</strong> until you submit.<br>
             Click <strong>"Done — reveal returns"</strong> to see your performance. Your new capital is reinvested into the next round.
         </div>
         
-        <div class="sub">Set A · Fear vs Opportunity · 6 rounds · $10,000 start</div>
+        <!-- Set Selector -->
+        <div class="set-selector">
+            <span class="set-label">📂 Select Data Set:</span>
+            <button class="set-btn active" data-set="A" id="setA">Set A · Fear vs Opportunity</button>
+            <button class="set-btn" data-set="B" id="setB">Set B · The Contrarian Test</button>
+            <button class="set-btn" data-set="C" id="setC">Set C · Global Rotation</button>
+            <button class="set-btn" data-set="D" id="setD">Set D · Decision-Making Under Uncertainty</button>
+        </div>
+
+        <div class="sub" id="setSubHeader">Set A · Fear vs Opportunity · 6 rounds · $10,000 start</div>
 
         <div id="roundPanel" class="round-panel">
             <div id="roundHeader" class="round-header">
                 <span class="round-badge" id="roundLabel">Round 1</span>
-                <span class="year-tag" id="yearTag">??? · Hidden year</span>
+                <span class="year-tag" id="yearTag">🔒 Hidden year</span>
             </div>
 
             <div class="capital-box">
@@ -48,14 +58,14 @@
                 <button class="mode-btn" id="modeBoth">🔄 Both</button>
             </div>
 
-            <!-- Asset Grid - Rendered by JavaScript -->
+            <!-- Asset Grid -->
             <div id="assetGrid" class="asset-grid"></div>
             <div id="globalError" class="error-msg"></div>
 
             <div class="quick-actions">
                 <button class="quick-btn" id="equalAlloc">⚖️ Equal Split</button>
                 <button class="quick-btn" id="cashOnly">💵 All Cash</button>
-                <button class="quick-btn" id="equityHeavy">📈 Growth (60% Eq, 20% Bonds, 10% Gold, 10% Cash)</button>
+                <button class="quick-btn" id="equityHeavy">📈 Growth (70% Eq, 20% Bonds, 10% Gold)</button>
                 <button class="quick-btn" id="defensive">🛡️ Defensive (20% Eq, 30% Bonds, 20% Gold, 30% Cash)</button>
                 <button class="quick-btn danger" id="clearAll">🗑️ Clear All</button>
             </div>
