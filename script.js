@@ -167,7 +167,12 @@
         submitBtn.disabled = false;
         submitBtn.textContent = '✅ Done — reveal returns';
         globalError.textContent = '';
-        yearTag.textContent = '🔒 Hidden year';
+        
+        // HIDE YEAR TAG
+        if (yearTag) {
+            yearTag.textContent = '';
+            yearTag.style.display = 'none';
+        }
         
         refreshUI();
     }
@@ -264,7 +269,7 @@
         refreshUI();
     }
 
-    // ----- Render Assets with Dual Input - FIXED LAYOUT -----
+    // ----- Render Assets with Dual Input -----
     function renderAssets() {
         const assetNames = getAssetNames();
         let html = '';
@@ -529,14 +534,17 @@
         const returnPercent = (totalReturn / capital) * 100;
         const newCapital = roundToTwo(capital + totalReturn);
 
-        const data = getRoundData();
-        yearTag.textContent = `🔒 ${data.year}`;
+        // HIDE YEAR - don't display it anywhere
+        if (yearTag) {
+            yearTag.textContent = '';
+            yearTag.style.display = 'none';
+        }
 
         const existingRound = history.find(h => h.round === currentRound + 1);
         if (!existingRound) {
             const roundReturnData = {
-                year: data.year,
-                label: data.label,
+                year: "Hidden",
+                label: "Hidden",
                 returns: { ...returns },
                 allocations: { ...allocationMap },
                 totalReturn: totalReturn,
@@ -547,8 +555,8 @@
 
             history.push({
                 round: currentRound + 1,
-                year: data.year,
-                label: data.label,
+                year: "Hidden",
+                label: "Hidden",
                 allocation: { ...allocationMap },
                 startCapital: capital,
                 returnAmount: totalReturn,
@@ -625,13 +633,17 @@
         } catch(e) {}
     }
 
+    // ----- Update Round Header - NO YEAR -----
     function updateRoundHeader() {
         if (gameCompleted || currentRound >= ROUNDS_DATA.length) {
             roundLabel.textContent = `🏁 Game Over`;
-            yearTag.textContent = `🎉 All rounds completed`;
         } else {
             roundLabel.textContent = `Round ${currentRound + 1}`;
-            yearTag.textContent = ``;
+        }
+        // Always hide the year tag
+        if (yearTag) {
+            yearTag.textContent = '';
+            yearTag.style.display = 'none';
         }
     }
 
@@ -649,7 +661,7 @@
                 .join(' · ');
             html += `
                 <div class="entry">
-                    <span class="tag">R${h.round} (${h.year})</span>
+                    <span class="tag">R${h.round}</span>
                     <span>💰 ${fmt(h.returnAmount)} (${fmt(h.returnPercent)}%)</span>
                     <span>🔁 capital: ${fmt(h.newCapital)}</span>
                     <span style="font-size:0.8rem; color:#2b577a;">${allocStr}</span>
@@ -676,7 +688,10 @@
         }
         
         submitBtn.disabled = false;
-        yearTag.textContent = `🔒 Hidden year`;
+        if (yearTag) {
+            yearTag.textContent = '';
+            yearTag.style.display = 'none';
+        }
         if (currentRound === ROUNDS_DATA.length - 1 && history.length === ROUNDS_DATA.length) {
             submitBtn.disabled = true;
             submitBtn.textContent = '🏁 Game Over';
@@ -694,6 +709,12 @@
         if (!assetGrid) {
             console.error('Asset grid not found!');
             return;
+        }
+
+        // HIDE YEAR TAG ON LOAD
+        if (yearTag) {
+            yearTag.textContent = '';
+            yearTag.style.display = 'none';
         }
 
         const savedSet = localStorage.getItem('currentSet');
@@ -768,7 +789,6 @@
                     
                     if (history.length > 0) {
                         const last = history[history.length - 1];
-                        yearTag.textContent = `🔒 ${last.year}`;
                         resultBlock.style.display = 'block';
                         returnAmountDisplay.textContent = (last.returnAmount >= 0 ? '+' : '') + fmt(last.returnAmount);
                         returnPercentDisplay.textContent = fmt(last.returnPercent) + '%';
@@ -781,6 +801,7 @@
             }
         }
         
+        // Start fresh
         currentRound = 0;
         capital = 10000.0;
         history = [];
