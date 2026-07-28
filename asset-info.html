@@ -10,6 +10,15 @@
             padding: 1.5rem 0;
         }
         
+        .asset-info-header-image {
+            width: 100%;
+            border-radius: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e2ebf3;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+            display: block;
+        }
+        
         .asset-info-card {
             background: white;
             border-radius: 1.5rem;
@@ -106,6 +115,14 @@
         .type-badge.commodity { background: #fef3c7; color: #d97706; }
         .type-badge.cash { background: #e5e7eb; color: #4b5563; }
         
+        .info-header {
+            margin-bottom: 1.5rem;
+        }
+        
+        .info-header .sub {
+            margin-bottom: 0.5rem;
+        }
+        
         @media (max-width: 700px) {
             .asset-info-card {
                 flex-direction: column;
@@ -115,6 +132,11 @@
             
             .asset-type-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .asset-info-header-image {
+                border-radius: 1rem;
+                margin-bottom: 1rem;
             }
         }
     </style>
@@ -130,8 +152,13 @@
             <a href="portfolio.html">📈 Portfolio</a>
         </div>
 
-        <h1>📚 Asset Class Information</h1>
-        <div class="sub">Understand the 6 asset classes in the game</div>
+        <div class="info-header">
+            <h1>📚 Asset Class Information</h1>
+            <div class="sub">Understand the 6 asset classes in the game</div>
+        </div>
+
+        <!-- Asset Info Image at the top -->
+        <img src="asset-info.jpeg" alt="Asset Class Information" class="asset-info-header-image" />
 
         <div class="asset-info-container">
             <!-- US EQ -->
