@@ -631,7 +631,7 @@
             yearTag.textContent = `🎉 All rounds completed`;
         } else {
             roundLabel.textContent = `Round ${currentRound + 1}`;
-            yearTag.textContent = `🔒 Hidden year`;
+            yearTag.textContent = ``;
         }
     }
 
