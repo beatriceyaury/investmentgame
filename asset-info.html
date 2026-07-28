@@ -6,16 +6,24 @@
     <title>Asset Information</title>
     <link rel="stylesheet" href="style.css" />
     <style>
+        /* Override app max-width for this page only */
+        .app {
+            max-width: 1200px !important;
+            width: 100% !important;
+            padding: 2rem !important;
+        }
+
         .asset-info-container {
             padding: 1.5rem 0;
+            width: 100%;
             max-width: 100%;
         }
         
         .asset-info-header-image {
             width: 100%;
-            max-width: 900px;
+            max-width: 100%;
             border-radius: 1.5rem;
-            margin: 0 auto 1.5rem auto;
+            margin-bottom: 1.5rem;
             border: 1px solid #e2ebf3;
             box-shadow: 0 4px 16px rgba(0,0,0,0.06);
             display: block;
@@ -23,9 +31,8 @@
         
         .asset-info-header-image-placeholder {
             width: 100%;
-            max-width: 900px;
             border-radius: 1.5rem;
-            margin: 0 auto 1.5rem auto;
+            margin-bottom: 1.5rem;
             padding: 2rem;
             background: linear-gradient(135deg, #f0f7fe, #e5eff9);
             border: 2px dashed #b6ccdf;
@@ -50,9 +57,7 @@
             display: flex;
             align-items: center;
             gap: 2rem;
-            max-width: 900px;
-            margin-left: auto;
-            margin-right: auto;
+            width: 100%;
         }
         
         .asset-info-card .asset-icon {
@@ -142,16 +147,6 @@
         
         .info-header {
             margin-bottom: 1.5rem;
-            text-align: center;
-        }
-        
-        .info-header .sub {
-            margin-bottom: 0.5rem;
-            text-align: center;
-        }
-        
-        .info-header h1 {
-            text-align: center;
         }
         
         .image-upload-hint {
@@ -159,36 +154,37 @@
             border: 1px solid #fde68a;
             border-radius: 0.8rem;
             padding: 0.5rem 1rem;
-            margin: 0 auto 1rem auto;
+            margin-bottom: 1rem;
             font-size: 0.8rem;
             color: #92400e;
             display: flex;
             align-items: center;
             gap: 0.5rem;
             flex-wrap: wrap;
-            max-width: 900px;
         }
         
         .legend-container {
-            max-width: 900px;
-            margin: 2rem auto 0 auto;
             padding: 1rem 1.5rem;
             background: #f8fbfe;
             border-radius: 1rem;
             border: 1px solid #e8eef6;
+            margin-top: 1.5rem;
         }
         
         .footnote {
             text-align: center;
+            margin-top: 1.5rem;
         }
         
         @media (max-width: 700px) {
+            .app {
+                padding: 1rem !important;
+            }
+            
             .asset-info-card {
                 flex-direction: column;
                 text-align: center;
                 padding: 1.2rem;
-                margin-left: 0;
-                margin-right: 0;
             }
             
             .asset-type-grid {
@@ -198,29 +194,11 @@
             .asset-info-header-image {
                 border-radius: 1rem;
                 margin-bottom: 1rem;
-                margin-left: 0;
-                margin-right: 0;
             }
             
             .asset-info-header-image-placeholder {
                 padding: 1.5rem;
                 font-size: 0.9rem;
-                margin-left: 0;
-                margin-right: 0;
-            }
-            
-            .info-header h1 {
-                font-size: 1.5rem;
-            }
-            
-            .image-upload-hint {
-                margin-left: 0;
-                margin-right: 0;
-            }
-            
-            .legend-container {
-                margin-left: 0;
-                margin-right: 0;
             }
         }
     </style>
@@ -241,14 +219,27 @@
             <div class="sub">Understand the 6 asset classes in the game</div>
         </div>
 
-        <!-- Asset Info Image with fallback -->
+        <!-- FIXED: assetinfo.jpeg with the correct extension -->
         <img 
             src="assetinfo.jpeg" 
             alt="Asset Class Information" 
             class="asset-info-header-image"
             onerror="this.style.display='none'; document.getElementById('imageFallback').style.display='block';"
         />
-        
+        <div id="imageFallback" class="asset-info-header-image-placeholder" style="display:none;">
+            <span class="big-icon">🖼️</span>
+            <strong>📸 Asset Info Image</strong>
+            <p style="margin-top: 0.3rem; font-size: 0.85rem;">
+                Save your image as <code style="background:#e2ebf3; padding:0.1rem 0.4rem; border-radius:4px;">assetinfo.jpeg</code> in the same folder to display it here.
+            </p>
+        </div>
+
+        <!-- Hint for adding image -->
+        <div class="image-upload-hint">
+            💡 <strong>Tip:</strong> To add an image, save it as <code style="background:#fde68a; padding:0.1rem 0.4rem; border-radius:4px;">assetinfo.jpeg</code> in the same folder as this page.
+        </div>
+
+        <div class="asset-info-container">
             <!-- US EQ -->
             <div class="asset-info-card">
                 <div class="asset-icon">🇺🇸</div>
